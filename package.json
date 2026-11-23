@@ -1,0 +1,13 @@
+{
+  "name": "etna-pizzeria-orders",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Etna Pizzeria – order IDs, Telegram time buttons and live order status (Netlify Functions)",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
