@@ -64,4 +64,4 @@ Optional (instead of Netlify Blobs): `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_RE
 2. Netlify -> Site -> Functions: you should see create-order, order-status, telegram-webhook, setup-webhook, health.
 3. Environment variables set (3 required) and the site redeployed afterwards.
 4. Webhook registered via `/api/setup-webhook?key=SECRET`.
-Safety net: if the functions are not reachable the page sends the order straight to Telegram (without time buttons, marked "manuell") so no order is lost. The customer then sees "Tack för din beställning" (no live time). To remove the safety net once everything works, empty `FALLBACK_TELEGRAM` in index.html and revoke the old token.
+Safety net: if the functions are not reachable the page sends the order straight to Telegram (without time buttons, marked "manuell") so no order is lost. The customer then sees "Tack för din beställning" (no live time). To remove the safety net once everything works, empty `FALLBACK_TELEGRAM` in index.html and revoke the old token.  
