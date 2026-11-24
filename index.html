@@ -1800,5 +1800,39 @@
       var n = 0, t = setInterval(function () { hideNetlifyBadge(); if (++n > 20) clearInterval(t); }, 500);
     })();
   </script>
+  <style id="hide-netlify-badge-style">
+  #nl-card,
+  #nl-badge,
+  .nl-card,
+  .nl-badge,
+  [id*="netlify"],
+  [class*="netlify-badge"],
+  a[href*="netlify.com"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+</style>
+<script>
+  (function () {
+    const selectors = '#nl-card, #nl-badge, .nl-card, .nl-badge, [id*="netlify"], [class*="netlify-badge"], a[href*="netlify.com"]';
+    function hideBadge() {
+      document.querySelectorAll(selectors).forEach((el) => {
+        el.style.setProperty('display', 'none', 'important');
+        el.style.setProperty('visibility', 'hidden', 'important');
+        el.style.setProperty('opacity', '0', 'important');
+        el.style.setProperty('pointer-events', 'none', 'important');
+      });
+    }
+    hideBadge();
+    const observer = new MutationObserver(hideBadge);
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+    window.addEventListener('load', hideBadge);
+  })();
+</script>
 </body>
 </html>
