@@ -1,1 +1,702 @@
-
+	
+generatedFrom	"index.html"
+addons	
+pizza	
+0	
+price	25
+replaceBase	false
+1	
+price	30
+replaceBase	false
+2	
+price	30
+replaceBase	false
+3	
+price	305
+replaceBase	true
+4	
+price	15
+replaceBase	false
+5	
+price	20
+replaceBase	false
+6	
+price	-10
+replaceBase	false
+burger	
+0	
+price	65
+replaceBase	false
+1	
+price	30
+replaceBase	false
+salad	
+0	
+price	20
+replaceBase	false
+items	
+p1	
+num	1
+name	"Margherita"
+type	"pizza"
+prices	
+0	120
+variants	null
+p2	
+num	2
+name	"Vesuvio"
+type	"pizza"
+prices	
+0	125
+variants	null
+p3	
+num	3
+name	"Al Funghi"
+type	"pizza"
+prices	
+0	125
+variants	null
+p4	
+num	4
+name	"Orientale"
+type	"pizza"
+prices	
+0	130
+variants	null
+p5	
+num	5
+name	"Capricciosa"
+type	"pizza"
+prices	
+0	130
+variants	null
+p6	
+num	6
+name	"Al Tono"
+type	"pizza"
+prices	
+0	130
+variants	null
+p7	
+num	7
+name	"Hawaii"
+type	"pizza"
+prices	
+0	130
+variants	null
+p8	
+num	8
+name	"Bussola"
+type	"pizza"
+prices	
+0	130
+variants	null
+p9	
+num	9
+name	"Marinara"
+type	"pizza"
+prices	
+0	130
+variants	null
+p10	
+num	10
+name	"Campagnola"
+type	"pizza"
+prices	
+0	130
+variants	null
+p11	
+num	11
+name	"Opera"
+type	"pizza"
+prices	
+0	130
+variants	null
+p12	
+num	12
+name	"Banana"
+type	"pizza"
+prices	
+0	130
+variants	null
+p13	
+num	13
+name	"Du Chef"
+type	"pizza"
+prices	
+0	130
+variants	null
+p14	
+num	14
+name	"Bacon Pizza"
+type	"pizza"
+prices	
+0	130
+variants	null
+p15	
+num	15
+name	"Vegetarisk"
+type	"pizza"
+prices	
+0	130
+variants	null
+p16	
+num	16
+name	"Calzone"
+type	"pizza"
+prices	
+0	135
+variants	null
+p17	
+num	17
+name	"Calzone Special"
+type	"pizza"
+prices	
+0	135
+variants	null
+p18	
+num	18
+name	"Quattro Stagioni"
+type	"pizza"
+prices	
+0	135
+variants	null
+p19	
+num	19
+name	"Napoli"
+type	"pizza"
+prices	
+0	135
+variants	null
+p20	
+num	20
+name	"Volkano"
+type	"pizza"
+prices	
+0	135
+variants	null
+p21	
+num	21
+name	"Kentucky"
+type	"pizza"
+prices	
+0	135
+variants	null
+p22	
+num	22
+name	"Taormina"
+type	"pizza"
+prices	
+0	135
+variants	null
+p23	
+num	23
+name	"Primavera"
+type	"pizza"
+prices	
+0	135
+variants	null
+p24	
+num	24
+name	"Kycklingpizza"
+type	"pizza"
+prices	
+0	135
+variants	null
+p25	
+num	25
+name	"Verdi"
+type	"pizza"
+prices	
+0	135
+variants	null
+p26	
+num	26
+name	"Tredogi"
+type	"pizza"
+prices	
+0	140
+variants	null
+p27	
+num	27
+name	"Roma"
+type	"pizza"
+prices	
+0	140
+variants	null
+p28	
+num	28
+name	"La Mafia"
+type	"pizza"
+prices	
+0	140
+variants	null
+p29	
+num	29
+name	"Hawaii Special"
+type	"pizza"
+prices	
+0	140
+variants	null
+p30	
+num	30
+name	"Mama Mia"
+type	"pizza"
+prices	
+0	140
+variants	null
+s31	
+num	31
+name	"Azteka"
+type	"pizza"
+prices	
+0	140
+variants	null
+s32	
+num	32
+name	"Dubbel Calzone"
+type	"pizza"
+prices	
+0	140
+variants	null
+s33	
+num	33
+name	"Quatro Formagio"
+type	"pizza"
+prices	
+0	140
+variants	null
+s34	
+num	34
+name	"Etna Al Gorgonzola"
+type	"pizza"
+prices	
+0	145
+variants	null
+s35	
+num	35
+name	"Husets Special"
+type	"pizza"
+prices	
+0	145
+variants	null
+s36	
+num	36
+name	"Mexicana"
+type	"pizza"
+prices	
+0	145
+variants	null
+s37	
+num	37
+name	"Kebab Pizza"
+type	"pizza"
+prices	
+0	150
+variants	null
+s38	
+num	38
+name	"Vikingbåt"
+type	"pizza"
+prices	
+0	150
+variants	null
+s39	
+num	39
+name	"Ruccola"
+type	"pizza"
+prices	
+0	150
+variants	null
+s40	
+num	40
+name	"Siciliana"
+type	"pizza"
+prices	
+0	150
+variants	null
+s41	
+num	41
+name	"Oskar"
+type	"pizza"
+prices	
+0	150
+variants	null
+s42	
+num	42
+name	"Havets Special"
+type	"pizza"
+prices	
+0	150
+variants	null
+s43	
+num	43
+name	"Shish Kebab"
+type	"pizza"
+prices	
+0	155
+variants	null
+s44	
+num	44
+name	"Ciao Ciao"
+type	"pizza"
+prices	
+0	155
+variants	null
+s45	
+num	45
+name	"Caprese"
+type	"pizza"
+prices	
+0	155
+variants	null
+s46	
+num	46
+name	"Filippos Special"
+type	"pizza"
+prices	
+0	155
+variants	null
+s47	
+num	47
+name	"Svartbäckens Special"
+type	"pizza"
+prices	
+0	155
+variants	null
+s48	
+num	48
+name	"Lovely Pizza"
+type	"pizza"
+prices	
+0	155
+variants	null
+s49	
+num	49
+name	"Sole Mio"
+type	"pizza"
+prices	
+0	155
+variants	null
+s50	
+num	50
+name	"Prosciutto Pizza"
+type	"pizza"
+prices	
+0	155
+variants	null
+s51	
+num	51
+name	"Polo"
+type	"pizza"
+prices	
+0	155
+variants	null
+s52	
+num	52
+name	"Chloé Hawaii"
+type	"pizza"
+prices	
+0	155
+variants	null
+s53	
+num	53
+name	"Roman Zucchini Pizza"
+type	"pizza"
+prices	
+0	155
+variants	null
+s54	
+num	54
+name	"Akapulco"
+type	"pizza"
+prices	
+0	160
+variants	null
+s55	
+num	55
+name	"Black & White"
+type	"pizza"
+prices	
+0	160
+variants	null
+s56	
+num	56
+name	"Vesuvio Special"
+type	"pizza"
+prices	
+0	160
+variants	null
+s57	
+num	57
+name	"Carusell"
+type	"pizza"
+prices	
+0	160
+variants	null
+s58	
+num	58
+name	"Bianca"
+type	"pizza"
+prices	
+0	160
+variants	null
+s59	
+num	59
+name	"Bagarens Special"
+type	"pizza"
+prices	
+0	160
+variants	null
+s60	
+num	60
+name	"Halloumipizza"
+type	"pizza"
+prices	
+0	160
+variants	null
+s61	
+num	61
+name	"Parma"
+type	"pizza"
+prices	
+0	160
+variants	null
+s62	
+num	62
+name	"Keyvin Mediterranean"
+type	"pizza"
+prices	
+0	160
+variants	null
+s63	
+num	63
+name	"Grekisk Special"
+type	"pizza"
+prices	
+0	170
+variants	null
+s64	
+num	64
+name	"Keyli Special"
+type	"pizza"
+prices	
+0	185
+variants	null
+b1	
+num	1
+name	"American Burger"
+type	"burger"
+prices	
+0	160
+1	180
+variants	
+0	"Bröd"
+1	"Meny (inkl. pommes & 33cl dryck)"
+b2	
+num	2
+name	"Cheeseburger"
+type	"burger"
+prices	
+0	135
+1	155
+variants	
+0	"Bröd"
+1	"Meny (inkl. pommes & 33cl dryck)"
+b3	
+num	3
+name	"Classic Burger"
+type	"burger"
+prices	
+0	135
+1	155
+variants	
+0	"Bröd"
+1	"Meny (inkl. pommes & 33cl dryck)"
+b4	
+num	4
+name	"Etna Burger"
+type	"burger"
+prices	
+0	220
+1	250
+variants	
+0	"Bröd"
+1	"Meny (inkl. pommes & 33cl dryck)"
+sal1	
+num	1
+name	"Ost & Skinksallad"
+type	"salad"
+prices	
+0	145
+variants	null
+sal2	
+num	2
+name	"Räksallad"
+type	"salad"
+prices	
+0	145
+variants	null
+sal3	
+num	3
+name	"Tonfisksallad"
+type	"salad"
+prices	
+0	145
+variants	null
+sal4	
+num	4
+name	"Västkustsallad"
+type	"salad"
+prices	
+0	145
+variants	null
+sal5	
+num	5
+name	"Kycklingsallad"
+type	"salad"
+prices	
+0	145
+variants	null
+sal6	
+num	6
+name	"Grekisk Sallad"
+type	"salad"
+prices	
+0	145
+variants	null
+sal7	
+num	7
+name	"Avokado"
+type	"salad"
+prices	
+0	145
+variants	null
+sal8	
+num	8
+name	"Kebabsallad"
+type	"salad"
+prices	
+0	145
+variants	null
+sal9	
+num	9
+name	"Caesarsallad"
+type	"salad"
+prices	
+0	145
+variants	null
+k1	
+num	1
+name	"Kebab"
+type	"none"
+prices	
+0	130
+1	140
+variants	
+0	"Rulle"
+1	"Tallrik (med pommes/ris)"
+k2	
+num	2
+name	"Kyckling"
+type	"none"
+prices	
+0	130
+1	140
+variants	
+0	"Rulle"
+1	"Tallrik (med pommes/ris)"
+k3	
+num	3
+name	"Falafel"
+type	"none"
+prices	
+0	130
+1	140
+variants	
+0	"Rulle"
+1	"Tallrik (med pommes/ris)"
+t1	
+num	null
+name	"Pizzasallad"
+type	"none"
+prices	
+0	15
+variants	null
+t2	
+num	null
+name	"Bearnaisesås"
+type	"none"
+prices	
+0	15
+variants	null
+t3	
+num	null
+name	"Kebabsås"
+type	"none"
+prices	
+0	15
+variants	null
+t4	
+num	null
+name	"Rhode Island Dressing"
+type	"none"
+prices	
+0	15
+variants	null
+t5	
+num	null
+name	"Tzatziki"
+type	"none"
+prices	
+0	15
+variants	null
+t6	
+num	null
+name	"Pommes"
+type	"none"
+prices	
+0	50
+variants	null
+t7	
+num	null
+name	"Lökringar 6 st"
+type	"none"
+prices	
+0	50
+variants	null
+t8	
+num	null
+name	"Chilicheese 6 st"
+type	"none"
+prices	
+0	55
+variants	null
+t9	
+num	null
+name	"Nuggets 6 st"
+type	"none"
+prices	
+0	60
+variants	null
+d1	
+num	null
+name	"Dryck 33 cl (Coca-Cola, Fanta, Sprite, Loka m.m.)"
+type	"none"
+prices	
+0	25
+variants	null
+d2	
+num	null
+name	"Dryck 50 cl"
+type	"none"
+prices	
+0	30
+variants	null
+d3	
+num	null
+name	"Dryck 1,5 L"
+type	"none"
+prices	
+0	50
+variants	null
