@@ -190,6 +190,13 @@
       #toast { bottom: 9.5rem !important; }
     }
 
+
+    /* Social icons – brand colours, clearly visible on dark backgrounds and mobile */
+    .social-ig { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); color: #fff; }
+    .social-fb { background: #1877F2; color: #fff; }
+    .social-ig, .social-fb { border: 1px solid rgba(255,255,255,0.28); box-shadow: 0 2px 8px rgba(0,0,0,0.35); transition: transform .15s ease, filter .15s ease; }
+    .social-ig:hover, .social-fb:hover { transform: scale(1.1); filter: brightness(1.12); }
+
     /* Hide the Netlify badge/link (bottom right) */
     a[href*="netlify.com"], [class*="netlify" i], [id*="netlify" i], [data-netlify-badge],
     #nl-card, #nl-badge, .nl-card, .nl-badge, [id="nl-card"], [id="nl-badge"],
@@ -293,10 +300,10 @@
           </a>
           <span class="hidden sm:inline-block w-px h-5 bg-espresso-700" aria-hidden="true"></span>
           <span class="text-xs text-cream-400 font-semibold">Följ oss</span>
-          <a href="https://www.instagram.com/etnapizzeria_uppsala?gwpx=bGZjemZibTU3Njh3" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Instagram" title="Instagram" class="w-9 h-9 rounded-full bg-espresso-800/90 hover:bg-terracotta-600 border border-espresso-700 flex items-center justify-center text-cream-50 transition">
+          <a href="https://www.instagram.com/etnapizzeria_uppsala?gwpx=bGZjemZibTU3Njh3" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Instagram" title="Instagram" class="w-9 h-9 rounded-full social-ig flex items-center justify-center">
             <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg>
           </a>
-          <a href="https://www.facebook.com/share/19tqyBYj3B/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Facebook" title="Facebook" class="w-9 h-9 rounded-full bg-espresso-800/90 hover:bg-terracotta-600 border border-espresso-700 flex items-center justify-center text-cream-50 transition">
+          <a href="https://www.facebook.com/share/19tqyBYj3B/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Facebook" title="Facebook" class="w-9 h-9 rounded-full social-fb flex items-center justify-center">
             <svg viewBox="0 0 24 24" class="w-4 h-4" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H7.9v3h2.6V21h3z"/></svg>
           </a>
         </div>
@@ -393,6 +400,92 @@
     </div>
   </main>
 
+  <!-- VÅR HISTORIA: redigera texten direkt nedan. Grundarbild: lägg /founder.jpg i GitHub-roten. -->
+  <section id="historia" class="max-w-7xl mx-auto px-4 sm:px-6 mt-16 scroll-mt-28">
+    <div class="bg-gradient-to-br from-espresso-850 to-espresso-800 border border-espresso-700/80 rounded-3xl p-5 sm:p-8 grid grid-cols-1 sm:grid-cols-[11rem,1fr] gap-5 sm:gap-8 items-center">
+
+      <!-- GRUNDARBILD (/founder.jpg) – visas automatiskt när filen finns -->
+      <figure class="relative mx-auto w-40 h-40 sm:w-44 sm:h-44 overflow-hidden rounded-2xl bg-espresso-900 border border-crust-500/40">
+        <div class="absolute inset-0 flex flex-col items-center justify-center gap-1.5 text-cream-400 text-center px-2">
+          <i data-lucide="user" class="w-8 h-8 opacity-60"></i>
+          <span class="text-[11px] font-semibold leading-tight">Filippo Gagliano</span>
+        </div>
+        <img src="/founder.jpg" alt="Filippo Gagliano, grundare av Etna Pizzeria" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+      </figure>
+
+      <div>
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-crust-500/15 border border-crust-500/40 text-crust-400 text-xs font-extrabold uppercase tracking-wider mb-3">
+          <i data-lucide="award" class="w-3.5 h-3.5"></i> Sedan 1984
+        </span>
+        <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-cream-50 mb-3">Vår historia</h2>
+        <!-- REDIGERA HISTORIKTEXTEN HÄR (ett <p> per stycke) -->
+        <p class="text-sm sm:text-base text-cream-300 leading-relaxed">
+          Etna Pizzeria grundades 1984 i Uppsala av Filippo Gagliano. I över fyra decennier har vi bakat pizza och serverat kebab och sallader till Uppsalas invånare – och idag kan du både beställa online och hämta din mat hos oss.
+        </p>
+        <p class="text-xs sm:text-sm text-cream-400 mt-3 font-semibold">Grundare: Filippo Gagliano</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERI: 6 platser. Lägg bilderna i GitHub-roten som /gallery-1.jpg … /gallery-6.jpg.
+       Fler bilder? Kopiera ett <figure>-block och öka numret. Saknas en fil visas "Bild kommer snart". -->
+  <section id="galleri" class="max-w-7xl mx-auto px-4 sm:px-6 mt-12 scroll-mt-28">
+    <div class="mb-4 pb-2 border-b border-espresso-800">
+      <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-cream-50">Galleri</h2>
+      <p class="text-sm text-cream-400">Ett smakprov från Etna Pizzeria</p>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+        <!-- GALLERIBILD 1: lägg filen i GitHub-roten som /gallery-1.jpg – den visas automatiskt. Ändra alt-texten vid behov. -->
+        <figure class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-espresso-850 border border-espresso-700/80">
+          <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-cream-400">
+            <i data-lucide="image" class="w-7 h-7 opacity-60"></i>
+            <span class="text-xs font-semibold">Bild kommer snart</span>
+          </div>
+          <img src="/gallery-1.jpg" alt="Etna Pizzeria – pizza" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+        </figure>
+        <!-- GALLERIBILD 2: lägg filen i GitHub-roten som /gallery-2.jpg – den visas automatiskt. Ändra alt-texten vid behov. -->
+        <figure class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-espresso-850 border border-espresso-700/80">
+          <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-cream-400">
+            <i data-lucide="image" class="w-7 h-7 opacity-60"></i>
+            <span class="text-xs font-semibold">Bild kommer snart</span>
+          </div>
+          <img src="/gallery-2.jpg" alt="Etna Pizzeria – restaurangen" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+        </figure>
+        <!-- GALLERIBILD 3: lägg filen i GitHub-roten som /gallery-3.jpg – den visas automatiskt. Ändra alt-texten vid behov. -->
+        <figure class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-espresso-850 border border-espresso-700/80">
+          <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-cream-400">
+            <i data-lucide="image" class="w-7 h-7 opacity-60"></i>
+            <span class="text-xs font-semibold">Bild kommer snart</span>
+          </div>
+          <img src="/gallery-3.jpg" alt="Etna Pizzeria – kebab" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+        </figure>
+        <!-- GALLERIBILD 4: lägg filen i GitHub-roten som /gallery-4.jpg – den visas automatiskt. Ändra alt-texten vid behov. -->
+        <figure class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-espresso-850 border border-espresso-700/80">
+          <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-cream-400">
+            <i data-lucide="image" class="w-7 h-7 opacity-60"></i>
+            <span class="text-xs font-semibold">Bild kommer snart</span>
+          </div>
+          <img src="/gallery-4.jpg" alt="Etna Pizzeria – färskt från ugnen" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+        </figure>
+        <!-- GALLERIBILD 5: lägg filen i GitHub-roten som /gallery-5.jpg – den visas automatiskt. Ändra alt-texten vid behov. -->
+        <figure class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-espresso-850 border border-espresso-700/80">
+          <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-cream-400">
+            <i data-lucide="image" class="w-7 h-7 opacity-60"></i>
+            <span class="text-xs font-semibold">Bild kommer snart</span>
+          </div>
+          <img src="/gallery-5.jpg" alt="Etna Pizzeria – sallad och tillbehör" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+        </figure>
+        <!-- GALLERIBILD 6: lägg filen i GitHub-roten som /gallery-6.jpg – den visas automatiskt. Ändra alt-texten vid behov. -->
+        <figure class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-espresso-850 border border-espresso-700/80">
+          <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-cream-400">
+            <i data-lucide="image" class="w-7 h-7 opacity-60"></i>
+            <span class="text-xs font-semibold">Bild kommer snart</span>
+          </div>
+          <img src="/gallery-6.jpg" alt="Etna Pizzeria – personalen" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+        </figure>
+    </div>
+  </section>
+
   <!-- FOOTER -->
   <footer id="kontakt" class="mt-16 border-t border-espresso-800 bg-espresso-950 pt-12 pb-24 md:pb-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -410,10 +503,10 @@
         </a>
         <!-- SOCIAL LINKS – to add TikTok later, copy one <a> below, change href/aria-label/title and use a TikTok SVG icon -->
         <div class="mt-4 flex items-center gap-3">
-          <a href="https://www.instagram.com/etnapizzeria_uppsala?gwpx=bGZjemZibTU3Njh3" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Instagram" title="Instagram" class="w-10 h-10 rounded-full bg-espresso-800 hover:bg-terracotta-600 border border-espresso-700 flex items-center justify-center text-cream-50 transition">
+          <a href="https://www.instagram.com/etnapizzeria_uppsala?gwpx=bGZjemZibTU3Njh3" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Instagram" title="Instagram" class="w-10 h-10 rounded-full social-ig flex items-center justify-center">
             <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg>
           </a>
-          <a href="https://www.facebook.com/share/19tqyBYj3B/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Facebook" title="Facebook" class="w-10 h-10 rounded-full bg-espresso-800 hover:bg-terracotta-600 border border-espresso-700 flex items-center justify-center text-cream-50 transition">
+          <a href="https://www.facebook.com/share/19tqyBYj3B/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Facebook" title="Facebook" class="w-10 h-10 rounded-full social-fb flex items-center justify-center">
             <svg viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H7.9v3h2.6V21h3z"/></svg>
           </a>
           <!-- TIKTOK (add later): <a href="https://www.tiktok.com/@DITT_KONTO" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på TikTok" title="TikTok" class="...same classes as above...">[TikTok SVG]</a> -->
@@ -731,10 +824,7 @@
     };
 
     const PIZZA_ADDONS = [
-      { id: 'pa1', name: 'Extra tillbehör på din pizza', price: 25 },
       { id: 'pa2', name: 'Glutenfri botten', price: 30 },
-      { id: 'pa3', name: 'Surdegs pizza', price: 30 },
-      { id: 'pa4', name: 'Familjepizza', price: 305, replaceBase: true },
       { id: 'pa5', name: 'Laktosfri', price: 15 },
       { id: 'pa6', name: 'Vegan pizza', price: 20 },
       { id: 'pa7', name: 'Barnpizza (-10:- på ordinarie pris)', price: -10 },
@@ -1789,54 +1879,5 @@
       var n = 0, t = setInterval(function () { hideNetlifyBadge(); if (++n > 20) clearInterval(t); }, 500);
     })();
   </script>
-<style>
-  #nl-card, #nl-badge, .nl-card, .nl-badge, .nl-wrap,
-  iframe[src*="netlify"], iframe[id*="nl"], a[href*="netlify.com"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    max-width: 0 !important;
-    max-height: 0 !important;
-    overflow: hidden !important;
-  }
-</style>
-<script>
-  (function () {
-    const selectors = '#nl-card, #nl-badge, .nl-card, .nl-badge, .nl-wrap, iframe[src*="netlify"], iframe[id*="nl"]';
-    const cleanBadge = () => {
-      document.querySelectorAll(selectors).forEach((el) => {
-        el.style.setProperty('display', 'none', 'important');
-        el.style.setProperty('visibility', 'hidden', 'important');
-        el.style.setProperty('opacity', '0', 'important');
-        el.style.setProperty('pointer-events', 'none', 'important');
-        el.remove();
-      });
-      document.querySelectorAll('a[href*="netlify.com"]').forEach((a) => {
-        let node = a;
-        while (node && node !== document.body) {
-          if (getComputedStyle(node).position === 'fixed') {
-            node.style.setProperty('display', 'none', 'important');
-            node.remove();
-            break;
-          }
-          node = node.parentElement;
-        }
-      });
-    };
-    cleanBadge();
-    document.addEventListener('DOMContentLoaded', cleanBadge);
-    window.addEventListener('load', cleanBadge);
-    const observer = new MutationObserver(cleanBadge);
-    observer.observe(document.documentElement, { childList: true, subtree: true });
-    const timer = setInterval(cleanBadge, 250);
-    setTimeout(() => {
-      clearInterval(timer);
-      observer.disconnect();
-    }, 15000);
-  })();
-</script>
 </body>
 </html>
