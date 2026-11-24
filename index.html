@@ -116,7 +116,13 @@
     }
 
     /* Hide the Netlify badge/link (bottom right) */
-    a[href*="netlify.com"], [class*="netlify" i], [id*="netlify" i], [data-netlify-badge] { display: none !important; visibility: hidden !important; }
+    a[href*="netlify.com"], [class*="netlify" i], [id*="netlify" i], [data-netlify-badge],
+    #nl-card, #nl-badge, .nl-card, .nl-badge, [id="nl-card"], [id="nl-badge"],
+    section[aria-label*="Netlify" i], button[aria-label*="Powered by Netlify" i] {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
   </style>
 </head>
 <body class="antialiased selection:bg-terracotta-600 selection:text-white pb-24 md:pb-12">
@@ -1590,6 +1596,12 @@
     (function () {
       function hideNetlifyBadge() {
         try {
+          document.querySelectorAll('#nl-card, #nl-badge, .nl-card, .nl-badge, [id="nl-card"], [id="nl-badge"], section[aria-label*="Netlify" i], button[aria-label*="Powered by Netlify" i]').forEach(function (el) {
+            el.style.setProperty('display', 'none', 'important');
+            el.style.setProperty('visibility', 'hidden', 'important');
+            el.style.setProperty('pointer-events', 'none', 'important');
+            if (el.parentNode) el.parentNode.removeChild(el);
+          });
           document.querySelectorAll('a[href*="netlify.com"]').forEach(function (a) {
             var el = a, target = a;
             while (el && el !== document.body) {
