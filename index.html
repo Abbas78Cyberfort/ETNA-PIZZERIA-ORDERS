@@ -223,7 +223,7 @@
     /* Hide the Netlify badge/link (bottom right) */
     a[href*="netlify.com"], [class*="netlify" i], [id*="netlify" i], [data-netlify-badge],
     #nl-card, #nl-badge, .nl-card, .nl-badge, [id="nl-card"], [id="nl-badge"],
-    section[aria-label*="Netlify" i], button[aria-label*="Powered by Netlify" i] {
+    section[aria-label*="Netlify" i], button[aria-label*="Powered by Netlify" i], iframe[data-nl-ready] {
       display: none !important;
       visibility: hidden !important;
       pointer-events: none !important;
@@ -550,18 +550,17 @@
 
   <script>
     // ==========================================
-    // ORDER API (Netlify Functions) – the Telegram token now lives ONLY on the server
+    // ORDER API (Netlify Functions)
+    // Orders are NOT sent from the browser any more. The customer pays via Stripe Checkout first;
+    // the Stripe webhook (server side) then sends the paid order to Telegram. No Telegram token here.
     // ==========================================
-    const ORDER_API = { create: '/api/create-order', status: '/api/order-status' };
-
-    // TEMPORARY SAFETY NET: if the server functions are not installed/reachable, the order is sent
-    // straight to Telegram (without time buttons) so that no order is lost.
-    // Once /api/health shows everything "ok" you can remove the token below (set both to "") – and
-    // revoke the old token in @BotFather, because anything in this file is publicly readable.
-    const FALLBACK_TELEGRAM = {
-      token: "9161283995:AAHgG7tH53dW99k6HTUE5k_Q5YlS-T8RqEI",
-      chatId: "-1004366975815"
+    const ORDER_API = {
+      checkout: '/.netlify/functions/create-checkout',
+      paymentStatus: '/.netlify/functions/payment-status',
+      status: '/api/order-status'
     };
+    const PENDING_CHECKOUT_KEY = 'etnaPendingCheckout';
+    const PAY_METHOD_KEY = 'etnaPayMethod';
     const ORDER_STORE_KEY = 'etnaActiveOrder';
 
     // ==========================================
@@ -793,7 +792,10 @@
       customerAddress: '',
       orderSubmitted: null,
       activeOrder: null,
-      isSubmitting: false
+      isSubmitting: false,
+      paymentMethod: 'swish',
+      paymentNotice: null,
+      checkoutError: ''
     };
 
     // ==========================================
@@ -802,9 +804,11 @@
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
       loadSavedCustomer();
+      loadPayMethod();
       renderMenu();
       updateCartUI();
       resumeActiveOrder();
+      handlePaymentReturn();
       const svc = document.getElementById('service-types');
       if (svc && FEATURES.delivery) svc.textContent = 'Avhämtning & Utkörning';
       const gc = document.getElementById('grill-count');
@@ -1249,6 +1253,7 @@
 
     function addToCart(entry) {
       state.orderSubmitted = null;
+      if (state.paymentNotice && state.paymentNotice.kind !== 'processing') state.paymentNotice = null;
       const existing = state.cart.find(c => c.cartId === entry.cartId);
       if (existing) {
         existing.qty += 1;
@@ -1286,6 +1291,8 @@
 
       const body = document.getElementById('cart-body');
       const footer = document.getElementById('cart-footer');
+
+      if (state.paymentNotice && renderPaymentNotice(body, footer)) return;
 
       if (state.orderSubmitted) {
         const itemsSummaryHtml = Array.isArray(state.orderSubmitted.items) && state.orderSubmitted.items.length
@@ -1429,11 +1436,22 @@
             <input id="order-address" type="text" value="${escapeHtml(state.customerAddress)}" oninput="state.customerAddress=this.value" placeholder="Gatuadress & portkod *" class="w-full bg-espresso-900 border border-espresso-700 rounded-xl px-3.5 py-2.5 text-sm text-cream-50 placeholder-cream-400 outline-none focus:border-crust-500">
           ` : ''}
 
+          <div>
+            <h3 class="text-xs uppercase tracking-wider font-bold text-crust-400 mb-2">Betalsätt</h3>
+            <div class="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Betalsätt">
+              ${[['swish', '📱', 'Swish'], ['klarna', '🛍️', 'Klarna'], ['card', '💳', 'Kort']].map(([id, ico, label]) => `
+                <button type="button" role="radio" aria-checked="${state.paymentMethod === id}" onclick="setPayMethod('${id}')" class="py-2.5 px-2 rounded-xl text-xs font-bold border transition cursor-pointer ${state.paymentMethod === id ? 'bg-crust-500 text-espresso-950 border-crust-500' : 'bg-espresso-900 text-cream-300 border-espresso-700 hover:border-espresso-600'}">
+                  <span aria-hidden="true">${ico}</span> ${label}
+                </button>`).join('')}
+            </div>
+            <p class="text-[11px] text-cream-400 mt-2 leading-snug">Säker betalning via Stripe. Beställningen skickas till restaurangen först när betalningen är genomförd.</p>
+          </div>
+
           <p class="flex items-start gap-2 text-xs text-cream-300 bg-espresso-900 border border-espresso-700 rounded-xl px-3.5 py-2.5">
             <span aria-hidden="true">⏱️</span>
             <span>Tiden (10–45 min) bekräftas av restaurangen när beställningen kommit in. Du ser den direkt här på skärmen.</span>
           </p>
-          <p id="order-error" class="text-xs text-terracotta-500 font-semibold hidden"></p>
+          <p id="order-error" class="text-xs text-terracotta-500 font-semibold ${state.checkoutError ? '' : 'hidden'}">${escapeHtml(state.checkoutError || '')}</p>
         </div>
       `;
 
@@ -1443,9 +1461,9 @@
           <span class="text-xl text-crust-400">${subtotal}:-</span>
         </div>
         ${orderingOpenNow() ? '' : `<p class="text-xs font-semibold text-crust-400 bg-crust-500/10 border border-crust-500/40 rounded-xl px-3.5 py-2.5 text-center">${orderingClosedMessage()}</p>`}
-        <button id="submit-order-btn" onclick="submitOnlineOrder(${subtotal})" ${(state.isSubmitting || !orderingOpenNow()) ? 'disabled' : ''} class="w-full bg-terracotta-600 hover:bg-terracotta-500 disabled:opacity-60 text-white font-extrabold py-3.5 rounded-2xl text-sm transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
-          <i data-lucide="send" class="w-4 h-4"></i>
-          <span>${state.isSubmitting ? 'Skickar beställning...' : (orderingOpenNow() ? 'Skicka beställning online' : 'Onlinebeställning stängd')}</span>
+        <button id="submit-order-btn" onclick="startCheckout(${subtotal})" ${(state.isSubmitting || !orderingOpenNow()) ? 'disabled' : ''} class="w-full bg-terracotta-600 hover:bg-terracotta-500 disabled:opacity-60 text-white font-extrabold py-3.5 rounded-2xl text-sm transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+          <i data-lucide="credit-card" class="w-4 h-4"></i>
+          <span>${state.isSubmitting ? 'Öppnar betalning...' : (orderingOpenNow() ? `Gå till betalning • ${subtotal}:-` : 'Onlinebeställning stängd')}</span>
         </button>
         <a href="tel:018203560" class="w-full flex items-center justify-center gap-2 bg-espresso-800 hover:bg-espresso-700 border border-espresso-700 text-cream-200 font-bold py-2.5 rounded-2xl text-xs transition">
           <i data-lucide="phone-call" class="w-3.5 h-3.5 text-crust-400"></i>
@@ -1454,64 +1472,6 @@
       `;
 
       lucide.createIcons();
-    }
-
-    // Sends the order to our server function, which creates the unique order ID
-    // and posts the order to Telegram with the time buttons.
-    async function createOrderOnServer(orderData) {
-      let response, data = null;
-      try {
-        response = await fetch(ORDER_API.create, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(orderData)
-        });
-        data = await response.json().catch(() => null);
-      } catch (netErr) {
-        const e = new Error('Ingen kontakt med servern');
-        e.useFallback = true;
-        throw e;
-      }
-      if (response.ok && data && data.orderId) return data;
-      const e = new Error(data && data.error ? data.error : `HTTP ${response.status}`);
-      // 404/405 = functions not deployed, 500 = server not configured -> use the safety net
-      e.useFallback = !data || response.status === 404 || response.status === 405 || response.status === 500;
-      throw e;
-    }
-
-    function localOrderId() {
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      const arr = crypto.getRandomValues(new Uint8Array(6));
-      return Array.from(arr, b => chars[b % chars.length]).join('');
-    }
-
-    async function sendOrderDirectToTelegram(orderData) {
-      if (!FALLBACK_TELEGRAM.token || !FALLBACK_TELEGRAM.chatId) throw new Error('Servern är inte installerad');
-      const id = localOrderId();
-      const lines = [
-        '🍕 NY BESTÄLLNING — ETNA PIZZERIA',
-        `🆔 Order: #${id}`,
-        '⚠️ Skickad utan tidsknappar (servern är inte uppsatt) – bekräfta tiden manuellt via telefon.',
-        '',
-        `📦 Typ: ${orderData.type === 'pickup' ? 'Avhämtning' : 'Utkörning'}`,
-        `👤 Namn: ${orderData.name}`,
-        `📞 Telefon: ${orderData.phone}`
-      ];
-      if (orderData.type === 'delivery' && orderData.address) lines.push(`📍 Adress: ${orderData.address}`);
-      lines.push('', '🍽️ Varor:');
-      orderData.items.forEach((item, idx) => {
-        lines.push(`${idx + 1}. ${item.qty}x ${item.name} — ${item.unitPrice * item.qty}:-`);
-        if (item.details) lines.push(`   (${item.details})`);
-      });
-      lines.push('', `💰 Totalt: ${orderData.total}:-`);
-      const r = await fetch(`https://api.telegram.org/bot${encodeURIComponent(FALLBACK_TELEGRAM.token)}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: FALLBACK_TELEGRAM.chatId, text: lines.join('\n') })
-      });
-      const d = await r.json().catch(() => null);
-      if (!r.ok || !d || !d.ok) throw new Error(d && d.description ? d.description : `HTTP ${r.status}`);
-      return { orderId: id, status: 'received' };
     }
 
     // ---------- Live order status (polling every 4 s) ----------
@@ -1601,39 +1561,56 @@
       clearActiveOrder();
       state.activeOrder = null;
       state.orderSubmitted = null;
+      state.paymentNotice = null;
       updateCartUI();
     }
 
-    async function submitOnlineOrder(total) {
-      const errEl = document.getElementById('order-error');
+    // ==========================================
+    // STRIPE CHECKOUT FLOW
+    // 1) startCheckout(): validates, stores a local snapshot, asks the server for a Checkout Session, redirects to Stripe.
+    // 2) Stripe returns to /?payment=success&session_id=... or /?payment=cancel
+    // 3) handlePaymentReturn(): on success polls the server until the (webhook-created) Telegram order exists,
+    //    then switches to the normal live order status view.
+    // ==========================================
+    function loadPayMethod() {
+      try {
+        const v = localStorage.getItem(PAY_METHOD_KEY);
+        if (v === 'swish' || v === 'klarna' || v === 'card') state.paymentMethod = v;
+      } catch (e) {}
+    }
+    function setPayMethod(m) {
+      state.paymentMethod = m;
+      try { localStorage.setItem(PAY_METHOD_KEY, m); } catch (e) {}
+      updateCartUI();
+    }
+    function savePendingCheckout(snap) {
+      try { localStorage.setItem(PENDING_CHECKOUT_KEY, JSON.stringify(snap)); } catch (e) {}
+    }
+    function readPendingCheckout() {
+      try {
+        const raw = localStorage.getItem(PENDING_CHECKOUT_KEY);
+        if (!raw) return null;
+        const o = JSON.parse(raw);
+        if (!o || !Array.isArray(o.cart) || Date.now() - (o.savedAt || 0) > 24 * 3600 * 1000) return null;
+        return o;
+      } catch (e) { return null; }
+    }
+    function clearPendingCheckout() {
+      try { localStorage.removeItem(PENDING_CHECKOUT_KEY); } catch (e) {}
+    }
+
+    async function startCheckout(total) {
       const nameVal = state.customerName.trim();
       const phoneVal = state.customerPhone.trim();
       const addressVal = state.customerAddress.trim();
+      const fail = (msg) => { state.checkoutError = msg; updateCartUI(); };
 
-      if (!nameVal || !phoneVal) {
-        errEl.textContent = 'Vänligen fyll i ditt namn och mobilnummer.';
-        errEl.classList.remove('hidden');
-        return;
-      }
-      if (FEATURES.delivery && state.orderType === 'delivery' && !addressVal) {
-        errEl.textContent = 'Vänligen fyll i leveransadress för utkörning.';
-        errEl.classList.remove('hidden');
-        return;
-      }
-      if (!state.cart.length) {
-        errEl.textContent = 'Varukorgen är tom.';
-        errEl.classList.remove('hidden');
-        return;
-      }
+      if (!nameVal || !phoneVal) return fail('Vänligen fyll i ditt namn och mobilnummer.');
+      if (FEATURES.delivery && state.orderType === 'delivery' && !addressVal) return fail('Vänligen fyll i leveransadress för utkörning.');
+      if (!state.cart.length) return fail('Varukorgen är tom.');
+      if (!orderingOpenNow()) return fail(orderingClosedMessage());
 
-      if (!orderingOpenNow()) {
-        errEl.textContent = orderingClosedMessage();
-        errEl.classList.remove('hidden');
-        updateCartUI();
-        return;
-      }
-
-      errEl.classList.add('hidden');
+      state.checkoutError = '';
       state.isSubmitting = true;
       updateCartUI();
 
@@ -1642,43 +1619,181 @@
         name: nameVal,
         phone: phoneVal,
         address: addressVal,
-        items: state.cart.map(i => ({ ...i })),
-        total
+        paymentMethod: state.paymentMethod,
+        items: state.cart.map(i => ({ cartId: i.cartId, name: i.name, details: i.details || '', unitPrice: i.unitPrice, qty: i.qty }))
       };
 
       try {
-        let created;
-        try {
-          created = await createOrderOnServer(orderPayload);
-        } catch (serverErr) {
-          if (!serverErr.useFallback) throw serverErr;
-          created = await sendOrderDirectToTelegram(orderPayload);
-        }
-        const placed = {
-          ...orderPayload,
-          orderId: created.orderId,
-          status: created.status || 'pending',
-          minutes: null,
-          confirmedAt: null,
-          savedAt: Date.now()
-        };
-        state.activeOrder = placed;
-        state.orderSubmitted = placed;
-        if (placed.status === 'pending') { saveActiveOrder(placed); startOrderPolling(); }
         saveCustomer(nameVal, phoneVal);
-        state.cart = [];
-        state.customerAddress = '';
-        showToast(created.status === 'received' ? 'Beställning skickad!' : 'Beställning skickad – väntar på bekräftelse');
+        // keep the cart so it can be restored if the customer cancels / goes back from Stripe
+        savePendingCheckout({ ...orderPayload, cart: state.cart.map(i => ({ ...i })), total, savedAt: Date.now() });
+
+        const r = await fetch(ORDER_API.checkout, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderPayload)
+        });
+        const d = await r.json().catch(() => null);
+        if (!r.ok || !d || !d.url) throw new Error(d && d.error ? d.error : `HTTP ${r.status}`);
+        window.location.assign(d.url);   // stay in "Öppnar betalning..." state while redirecting
       } catch (err) {
-        const errBox = document.getElementById('order-error');
-        if (errBox) {
-          errBox.textContent = `Kunde inte skicka beställningen (${err.message}). Försök igen eller ring oss på 018-20 35 60.`;
-          errBox.classList.remove('hidden');
-        }
-      } finally {
         state.isSubmitting = false;
-        updateCartUI();
+        fail(`Kunde inte öppna betalningen (${err.message}). Försök igen eller ring oss på 018-20 35 60.`);
       }
+    }
+
+    // Back button from Stripe (bfcache) -> make the button usable again
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted && state.isSubmitting) { state.isSubmitting = false; updateCartUI(); }
+    });
+
+    let paymentPollTimer = null;
+    function stopPaymentPolling() {
+      if (paymentPollTimer) { clearInterval(paymentPollTimer); paymentPollTimer = null; }
+    }
+
+    function handlePaymentReturn() {
+      let params;
+      try { params = new URLSearchParams(window.location.search); } catch (e) { return; }
+      const result = params.get('payment');
+      if (!result) return;
+      const sid = params.get('session_id') || '';
+      try { history.replaceState(null, '', window.location.pathname + window.location.hash); } catch (e) {}
+
+      if (result === 'cancel') {
+        const snap = readPendingCheckout();
+        if (snap && !state.cart.length) {
+          state.cart = snap.cart;
+          if (snap.name) state.customerName = snap.name;
+          if (snap.phone) state.customerPhone = snap.phone;
+        }
+        state.orderSubmitted = null;
+        state.paymentNotice = { kind: 'cancel' };
+        toggleCart(true);
+        return;
+      }
+      if (result === 'success' && /^cs_(test|live)_[A-Za-z0-9]+$/.test(sid)) {
+        state.orderSubmitted = null;
+        state.paymentNotice = { kind: 'processing', sessionId: sid, startedAt: Date.now(), paid: false };
+        toggleCart(true);
+        stopPaymentPolling();
+        checkPayment();
+        paymentPollTimer = setInterval(checkPayment, 2000);
+      }
+    }
+
+    async function checkPayment() {
+      const n = state.paymentNotice;
+      if (!n || n.kind !== 'processing') { stopPaymentPolling(); return; }
+      if (Date.now() - n.startedAt > 90 * 1000) {
+        stopPaymentPolling();
+        state.paymentNotice = { kind: n.paid ? 'delayed' : 'unconfirmed', sessionId: n.sessionId };
+        updateCartUI();
+        return;
+      }
+      try {
+        const r = await fetch(`${ORDER_API.paymentStatus}?session_id=${encodeURIComponent(n.sessionId)}`, { cache: 'no-store' });
+        if (r.status === 400 || r.status === 404) {
+          stopPaymentPolling();
+          state.paymentNotice = { kind: 'unconfirmed', sessionId: n.sessionId };
+          updateCartUI();
+          return;
+        }
+        if (!r.ok) return;
+        const d = await r.json();
+        if (state.paymentNotice !== n) return;
+        n.paid = !!d.paid;
+        if (d.sessionStatus === 'expired' && !d.paid) {
+          stopPaymentPolling();
+          state.paymentNotice = { kind: 'cancel' };
+          updateCartUI();
+          return;
+        }
+        if (d.paid && d.orderId) {
+          stopPaymentPolling();
+          const snap = readPendingCheckout();
+          const placed = {
+            type: d.type || (snap && snap.type) || 'pickup',
+            name: d.name || (snap && snap.name) || '',
+            phone: d.phone || (snap && snap.phone) || '',
+            address: d.address || '',
+            items: (Array.isArray(d.items) && d.items.length ? d.items : (snap ? snap.cart : [])),
+            total: d.total || (snap && snap.total) || 0,
+            orderId: d.orderId,
+            status: d.status === 'received' ? 'received' : 'pending',
+            minutes: null,
+            confirmedAt: null,
+            paid: true,
+            savedAt: Date.now()
+          };
+          clearPendingCheckout();
+          state.cart = [];
+          state.customerAddress = '';
+          state.activeOrder = placed;
+          state.orderSubmitted = placed;
+          state.paymentNotice = null;
+          if (placed.status === 'pending') { saveActiveOrder(placed); startOrderPolling(); }
+          showToast('Betalning mottagen – beställning skickad!');
+          updateCartUI();
+        } else {
+          updateCartUI();
+        }
+      } catch (e) { /* offline – try again on next tick */ }
+    }
+
+    // Renders payment-return messages in the cart drawer. Returns true if it handled the drawer.
+    function renderPaymentNotice(body, footer) {
+      const n = state.paymentNotice;
+      if (!n) return false;
+      const ref = n.sessionId ? n.sessionId.slice(-8).toUpperCase() : '';
+      let box, iconWrap, icon, iconCls = 'w-8 h-8', title, text, extra = '';
+      if (n.kind === 'processing') {
+        box = 'bg-crust-500/10 border-crust-500/40'; iconWrap = 'bg-crust-500/20 text-crust-400'; icon = 'loader'; iconCls = 'w-8 h-8 animate-spin';
+        title = n.paid ? 'Betalning mottagen!' : 'Bekräftar din betalning…';
+        text = n.paid
+          ? 'Tack! Vi skickar din beställning till restaurangen just nu.'
+          : 'Vi kontrollerar din betalning. Det tar bara några sekunder – stäng inte sidan.';
+        extra = '<p class="text-xs text-cream-400">Ingen beställning har skickats ännu – den skickas när betalningen är bekräftad.</p>';
+      } else if (n.kind === 'cancel') {
+        box = 'bg-terracotta-600/10 border-terracotta-500/40'; iconWrap = 'bg-terracotta-600/20 text-terracotta-500'; icon = 'x-circle';
+        title = 'Betalningen avbröts';
+        text = 'Ingen betalning har gjorts och ingen beställning har skickats till restaurangen. Din varukorg finns kvar – du kan försöka igen när du vill.';
+      } else if (n.kind === 'delayed') {
+        box = 'bg-crust-500/10 border-crust-500/40'; iconWrap = 'bg-crust-500/20 text-crust-400'; icon = 'clock';
+        title = 'Betalningen är genomförd';
+        text = 'Din betalning är mottagen, men vi har inte fått bekräftelse från restaurangen ännu. Ring oss gärna på <strong>018-20 35 60</strong> så kontrollerar vi din beställning. Skicka inte beställningen igen.';
+        extra = ref ? `<p class="text-sm text-cream-300">Referens: <strong class="text-crust-400">${escapeHtml(ref)}</strong></p>` : '';
+      } else {
+        box = 'bg-crust-500/10 border-crust-500/40'; iconWrap = 'bg-crust-500/20 text-crust-400'; icon = 'help-circle';
+        title = 'Vi kunde inte bekräfta betalningen';
+        text = 'Vi har inte fått någon bekräftelse på betalningen. Om pengar har dragits från ditt konto, ring oss på <strong>018-20 35 60</strong> så hjälper vi dig. Beställningen har inte skickats.';
+        extra = ref ? `<p class="text-sm text-cream-300">Referens: <strong class="text-crust-400">${escapeHtml(ref)}</strong></p>` : '';
+      }
+      body.innerHTML = `
+        <div class="${box} border rounded-2xl p-6 text-center space-y-3" aria-live="polite">
+          <div class="w-14 h-14 rounded-full ${iconWrap} flex items-center justify-center mx-auto">
+            <i data-lucide="${icon}" class="${iconCls}"></i>
+          </div>
+          <h3 class="font-display text-2xl font-bold text-cream-50">${title}</h3>
+          <p class="text-sm text-cream-200">${text}</p>
+          ${extra}
+        </div>`;
+      footer.innerHTML = `
+        ${n.kind === 'cancel' ? `
+        <button onclick="state.paymentNotice=null; updateCartUI()" class="w-full flex items-center justify-center gap-2 bg-terracotta-600 hover:bg-terracotta-500 text-white font-extrabold py-3.5 rounded-2xl text-sm transition shadow-lg cursor-pointer">
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          <span>Tillbaka till varukorgen</span>
+        </button>` : ''}
+        ${n.kind !== 'processing' && n.kind !== 'cancel' ? `
+        <button onclick="state.paymentNotice=null; updateCartUI()" class="w-full flex items-center justify-center gap-2 bg-espresso-800 hover:bg-espresso-700 border border-espresso-700 text-cream-200 font-bold py-2.5 rounded-2xl text-xs transition cursor-pointer">
+          <span>Stäng</span>
+        </button>` : ''}
+        <a href="tel:018203560" class="w-full flex items-center justify-center gap-2 bg-espresso-800 hover:bg-espresso-700 border border-crust-500/40 text-cream-50 font-bold py-3.5 rounded-2xl text-sm transition">
+          <i data-lucide="phone-call" class="w-4 h-4 text-crust-400"></i>
+          <span>Ring Etna Pizzeria: 018 - 20 35 60</span>
+        </a>`;
+      lucide.createIcons();
+      return true;
     }
 
     // ---------- Cart upsell (drink / sauce) ----------
@@ -1772,7 +1887,7 @@
     (function () {
       function hideNetlifyBadge() {
         try {
-          document.querySelectorAll('#nl-card, #nl-badge, .nl-card, .nl-badge, [id="nl-card"], [id="nl-badge"], section[aria-label*="Netlify" i], button[aria-label*="Powered by Netlify" i]').forEach(function (el) {
+          document.querySelectorAll('#nl-card, #nl-badge, .nl-card, .nl-badge, [id="nl-card"], [id="nl-badge"], section[aria-label*="Netlify" i], button[aria-label*="Powered by Netlify" i], iframe[data-nl-ready]').forEach(function (el) {
             el.style.setProperty('display', 'none', 'important');
             el.style.setProperty('visibility', 'hidden', 'important');
             el.style.setProperty('pointer-events', 'none', 'important');
@@ -1800,79 +1915,5 @@
       var n = 0, t = setInterval(function () { hideNetlifyBadge(); if (++n > 20) clearInterval(t); }, 500);
     })();
   </script>
-  <style id="hide-netlify-badge-style">
-  #nl-card,
-  #nl-badge,
-  .nl-card,
-  .nl-badge,
-  [id*="netlify"],
-  [class*="netlify-badge"],
-  a[href*="netlify.com"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    overflow: hidden !important;
-  }
-</style>
-<script>
-  (function () {
-    const selectors = '#nl-card, #nl-badge, .nl-card, .nl-badge, [id*="netlify"], [class*="netlify-badge"], a[href*="netlify.com"]';
-    function hideBadge() {
-      document.querySelectorAll(selectors).forEach((el) => {
-        el.style.setProperty('display', 'none', 'important');
-        el.style.setProperty('visibility', 'hidden', 'important');
-        el.style.setProperty('opacity', '0', 'important');
-        el.style.setProperty('pointer-events', 'none', 'important');
-      });
-    }
-    hideBadge();
-    const observer = new MutationObserver(hideBadge);
-    observer.observe(document.documentElement, { childList: true, subtree: true });
-    window.addEventListener('load', hideBadge);
-  })();
-</script>
-  <style id="hide-nl-iframe-style">
-  iframe[data-nl-ready],
-  iframe[style*="z-index: 2147483645"],
-  iframe[style*="z-index:2147483645"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    width: 0 !important;
-    height: 0 !important;
-  }
-</style>
-<script>
-  (function () {
-    function removeNlIframe() {
-      document.querySelectorAll('iframe').forEach((frame) => {
-        const hasAttr = frame.hasAttribute('data-nl-ready');
-        const zIdx = window.getComputedStyle(frame).zIndex;
-        let isNlDoc = false;
-        try {
-          const doc = frame.contentDocument || frame.contentWindow?.document;
-          if (doc && (doc.querySelector('#nl-badge, .nl-wrap, #nl-card'))) {
-            isNlDoc = true;
-          }
-        } catch (_) {}
-
-        if (hasAttr || zIdx === '2147483645' || isNlDoc) {
-          frame.remove();
-        }
-      });
-    }
-
-    removeNlIframe();
-    new MutationObserver(removeNlIframe).observe(document.documentElement, {
-      childList: true,
-      subtree: true
-    });
-    setInterval(removeNlIframe, 500);
-  })();
-</script>
 </body>
 </html>
