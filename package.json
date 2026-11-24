@@ -1,13 +1,16 @@
 {
-  "name": "etna-pizzeria-orders",
+  "name": "etna-pizzeria",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
-  "description": "Etna Pizzeria – order IDs, Telegram time buttons and live order status (Netlify Functions)",
-  "dependencies": {
-    "@netlify/blobs": "^8.1.0"
+  "description": "Etna Pizzeria Uppsala - website + Netlify Functions (Stripe checkout, Telegram orders)",
+  "scripts": {
+    "build:menu": "node scripts/generate-menu-catalog.js"
   },
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0",
+    "stripe": "^17.9.0"
   }
 }
