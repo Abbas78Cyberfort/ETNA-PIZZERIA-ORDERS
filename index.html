@@ -114,6 +114,9 @@
       footer#kontakt { padding-bottom: 11rem !important; }
       #toast { bottom: 9.5rem !important; }
     }
+
+    /* Hide the Netlify badge/link (bottom right) */
+    a[href*="netlify.com"], [class*="netlify" i], [id*="netlify" i], [data-netlify-badge] { display: none !important; visibility: hidden !important; }
   </style>
 </head>
 <body class="antialiased selection:bg-terracotta-600 selection:text-white pb-24 md:pb-12">
@@ -240,11 +243,11 @@
         <div id="category-tabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 lg:pb-0">
           <button data-cat="pizzor" class="cat-tab active shrink-0 px-4 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2 bg-crust-500 text-espresso-950 shadow-md">
             <span>🍕 Pizzor</span>
-            <span class="text-xs px-1.5 py-0.5 rounded-md bg-black/15">29</span>
+            <span class="text-xs px-1.5 py-0.5 rounded-md bg-black/15">30</span>
           </button>
           <button data-cat="special" class="cat-tab shrink-0 px-4 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2 bg-espresso-800 text-cream-300 hover:bg-espresso-700">
             <span>⭐ Specialpizzor</span>
-            <span class="text-xs px-1.5 py-0.5 rounded-md bg-espresso-900 text-cream-400">35</span>
+            <span class="text-xs px-1.5 py-0.5 rounded-md bg-espresso-900 text-cream-400">34</span>
           </button>
           <button data-cat="grill" class="cat-tab shrink-0 px-4 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2 bg-espresso-800 text-cream-300 hover:bg-espresso-700">
             <span>🔥 Grill & Kebab</span>
@@ -277,7 +280,7 @@
         <span class="text-xs text-cream-400 font-semibold mr-1 shrink-0">Filter:</span>
         <button data-sub="all" class="sub-pill active shrink-0 px-3 py-1 rounded-lg text-xs font-bold bg-terracotta-600 text-white transition">Alla pizzor</button>
         <button data-sub="lunch" class="sub-pill shrink-0 px-3 py-1 rounded-lg text-xs font-semibold bg-espresso-800 text-cream-300 hover:bg-espresso-700 transition">Lunchpizzor (Nr 1–25 • 125:-)</button>
-        <button data-sub="gourmet" class="sub-pill shrink-0 px-3 py-1 rounded-lg text-xs font-semibold bg-espresso-800 text-cream-300 hover:bg-espresso-700 transition">Gourmet & Oxfilé (Nr 26–29)</button>
+        <button data-sub="gourmet" class="sub-pill shrink-0 px-3 py-1 rounded-lg text-xs font-semibold bg-espresso-800 text-cream-300 hover:bg-espresso-700 transition">Gourmet & Oxfilé (Nr 26–30)</button>
         <button data-sub="veg" class="sub-pill shrink-0 px-3 py-1 rounded-lg text-xs font-semibold bg-espresso-800 text-cream-300 hover:bg-espresso-700 transition">🌿 Vegetarisk</button>
         <button data-sub="spicy" class="sub-pill shrink-0 px-3 py-1 rounded-lg text-xs font-semibold bg-espresso-800 text-cream-300 hover:bg-espresso-700 transition">🌶️ Stark</button>
       </div>
@@ -480,18 +483,18 @@
         { id: 'p22', num: 22, name: 'Taormina', desc: 'Salami, lök, oliver', price: 135, tags: ['lunch'] },
         { id: 'p23', num: 23, name: 'Primavera', desc: 'Skinka, champinjoner, räkor', price: 135, tags: ['lunch'] },
         { id: 'p24', num: 24, name: 'Kycklingpizza', desc: 'Kyckling, lök, paprika, champinjoner', price: 135, tags: ['lunch'] },
-        { id: 'p25', num: 25, name: 'Tredogi', desc: 'Musslor, räkor, tonfisk', price: 140, tags: ['lunch'] },
-        { id: 'p26', num: 26, name: 'Roma', desc: 'Tonfisk, lök, räkor', price: 140, tags: ['gourmet'] },
-        { id: 'p27', num: 27, name: 'La Mafia', desc: 'Bacon, ägg, lök, cayennepeppar', price: 140, tags: ['gourmet', 'spicy'] },
-        { id: 'p28', num: 28, name: 'Hawaii Special', desc: 'Skinka, ananas, banan, curry', price: 140, tags: ['gourmet'] },
-        { id: 'p29', num: 29, name: 'Mama Mia', desc: 'Salami, lök, paprika', price: 140, tags: ['gourmet'] },
+        { id: 'p25', num: 25, name: 'Verdi', desc: 'Champinjoner, lök, körsbärstomat, oliver, spenat, parmesan', price: 135, tags: ['lunch', 'veg'] },
+        { id: 'p26', num: 26, name: 'Tredogi', desc: 'Musslor, räkor, tonfisk', price: 140, tags: ['gourmet'] },
+        { id: 'p27', num: 27, name: 'Roma', desc: 'Tonfisk, lök, räkor', price: 140, tags: ['gourmet'] },
+        { id: 'p28', num: 28, name: 'La Mafia', desc: 'Bacon, ägg, lök, cayennepeppar', price: 140, tags: ['gourmet', 'spicy'] },
+        { id: 'p29', num: 29, name: 'Hawaii Special', desc: 'Skinka, ananas, banan, curry', price: 140, tags: ['gourmet'] },
+        { id: 'p30', num: 30, name: 'Mama Mia', desc: 'Salami, lök, paprika', price: 140, tags: ['gourmet'] },
       ],
 
       special: [
-        { id: 's30', num: 30, name: 'Azteka', desc: 'Skinka, jalapeno, tacosås, färsk vitlök', price: 135, tags: ['spicy'] },
-        { id: 's31', num: 31, name: 'Verdi', desc: 'Champinjoner, lök, körsbärstomat, oliver, spenat, parmesan', price: 135, tags: ['veg'] },
+        { id: 's31', num: 31, name: 'Azteka', desc: 'Skinka, jalapeno, tacosås, färsk vitlök', price: 140, tags: ['spicy'] },
         { id: 's32', num: 32, name: 'Dubbel Calzone', desc: 'Skinka', price: 140, tags: [] },
-        { id: 's33', num: 33, name: 'Quattro Formaggio', desc: 'Goudost, fetaost, gorgonzola, mozzarella, ruccola', price: 140, tags: ['veg'] },
+        { id: 's33', num: 33, name: 'Quatro Formagio', desc: 'Goudost, fetaost, gorgonzola, mozzarella, ruccola', price: 140, tags: ['veg'] },
         { id: 's34', num: 34, name: 'Etna Al Gorgonzola', desc: 'Fläskfilé, lök, paprika, gorgonzola', price: 145, tags: [], badge: 'Populär' },
         { id: 's35', num: 35, name: 'Husets Special', desc: 'Fläskfilé, lök, champinjoner, tomat, café de paris smör', price: 145, tags: [] },
         { id: 's36', num: 36, name: 'Mexicana', desc: 'Köttfärs, jalapeno, tacosås, färsk vitlök', price: 145, tags: ['spicy'], badge: 'Stark' },
@@ -507,7 +510,7 @@
         { id: 's46', num: 46, name: 'Filippos Special', desc: 'Lufttorkade tomater, champinjoner, kronärtskocka, ägg', price: 155, tags: ['gourmet'] },
         { id: 's47', num: 47, name: 'Svartbäckens Special', desc: 'Lök, paprika, fetaost, salami, jalapeno, oliver, vitlök, feferoni', price: 155, tags: ['gourmet', 'spicy'], badge: 'Stark' },
         { id: 's48', num: 48, name: 'Lovely Pizza', desc: 'Chevre ost, rödlök, pinjenötter, honung, chili, ruccola', price: 155, tags: ['gourmet', 'veg'] },
-        { id: 's49', num: 49, name: 'Sole Mio', desc: 'Chevreost, rödlök, valnötter, chili, ruccola, olivolja, parmesansås', price: 155, tags: ['gourmet', 'veg'] },
+        { id: 's49', num: 49, name: 'Sole Mio', desc: 'Chevreost, rödlök, valnötter, chili, ruccola, olivolja, parmesanost', price: 155, tags: ['gourmet', 'veg'] },
         { id: 's50', num: 50, name: 'Prosciutto Pizza', desc: 'Mozzarellaost, prosciutto, ruccola, parmesan, pinjenötter, tryffelolja', price: 155, tags: ['gourmet'] },
         { id: 's51', num: 51, name: 'Polo', desc: 'Kyckling, paprika, lök, tomat, oliver, curry', price: 155, tags: ['gourmet'] },
         { id: 's52', num: 52, name: 'Chloé Hawaii', desc: 'Pepperoni, ananas, jalapeno, lök, persilja', price: 155, tags: ['gourmet', 'spicy'], badge: 'Stark' },
@@ -531,7 +534,7 @@
           desc: 'Isbergssallad, gurka, tomat, lök, feferoni, kebabsås',
           variants: [
             { label: 'Rulle', price: 130 },
-            { label: 'Tallrik (med pommes/ris)', price: 135 }
+            { label: 'Tallrik (med pommes/ris)', price: 140 }
           ]
         },
         {
@@ -539,7 +542,7 @@
           desc: 'Isbergssallad, gurka, tomat, lök, feferoni, kebabsås',
           variants: [
             { label: 'Rulle', price: 130 },
-            { label: 'Tallrik (med pommes/ris)', price: 135 }
+            { label: 'Tallrik (med pommes/ris)', price: 140 }
           ]
         },
         {
@@ -547,7 +550,7 @@
           desc: 'Isbergssallad, gurka, tomat, lök, feferoni, kebabsås',
           variants: [
             { label: 'Rulle', price: 130 },
-            { label: 'Tallrik (med pommes/ris)', price: 135 }
+            { label: 'Tallrik (med pommes/ris)', price: 140 }
           ]
         }
       ],
@@ -607,8 +610,9 @@
         { id: 't4', name: 'Rhode Island Dressing', price: 15, group: 'Såser & Smårätter' },
         { id: 't5', name: 'Tzatziki', price: 15, group: 'Såser & Smårätter' },
         { id: 't6', name: 'Pommes', price: 50, group: 'Såser & Smårätter' },
-        { id: 't7', name: 'Lökringar 6 st', price: 60, group: 'Såser & Smårätter' },
+        { id: 't7', name: 'Lökringar 6 st', price: 50, group: 'Såser & Smårätter' },
         { id: 't8', name: 'Chilicheese 6 st', price: 55, group: 'Såser & Smårätter' },
+        { id: 't9', name: 'Nuggets 6 st', price: 60, group: 'Såser & Smårätter' },
         { id: 'd1', name: 'Dryck 33 cl (Coca-Cola, Fanta, Sprite, Loka m.m.)', price: 25, group: 'Dryck' },
         { id: 'd2', name: 'Dryck 50 cl', price: 30, group: 'Dryck' },
         { id: 'd3', name: 'Dryck 1,5 L', price: 50, group: 'Dryck' },
@@ -815,7 +819,7 @@
           </div>
         `;
         container.innerHTML = `
-          ${renderSectionBlock('Kebabrätter', 'Isbergssallad, gurka, tomat, lök, feferoni & kebabsås ingår • Rulle 130:- / Tallrik 135:-', MENU_DATA.kebab, 'variant')}
+          ${renderSectionBlock('Kebabrätter', 'Isbergssallad, gurka, tomat, lök, feferoni & kebabsås ingår • Rulle 130:- / Tallrik 140:-', MENU_DATA.kebab, 'variant')}
           ${FEATURES.burgers
             ? renderSectionBlock('Hamburgare', 'Välj enbart med bröd eller som komplett meny • Extra kött +65:- • Extra ost +30:-', MENU_DATA.burgers, 'variant')
             : `<div>
@@ -1579,6 +1583,33 @@
       }
       updateOpenStatus();
       setInterval(updateOpenStatus, 60000);
+    })();
+  </script>
+  <script>
+    // Remove the Netlify badge if it is injected into the page after load
+    (function () {
+      function hideNetlifyBadge() {
+        try {
+          document.querySelectorAll('a[href*="netlify.com"]').forEach(function (a) {
+            var el = a, target = a;
+            while (el && el !== document.body) {
+              if (getComputedStyle(el).position === 'fixed') { target = el; break; }
+              el = el.parentElement;
+            }
+            target.style.setProperty('display', 'none', 'important');
+          });
+          Array.prototype.forEach.call(document.body.children, function (el) {
+            if (/netlify/i.test(el.tagName + ' ' + (el.id || '') + ' ' + (typeof el.className === 'string' ? el.className : ''))) {
+              el.style.setProperty('display', 'none', 'important');
+            }
+          });
+        } catch (e) {}
+      }
+      hideNetlifyBadge();
+      document.addEventListener('DOMContentLoaded', hideNetlifyBadge);
+      window.addEventListener('load', hideNetlifyBadge);
+      try { new MutationObserver(hideNetlifyBadge).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
+      var n = 0, t = setInterval(function () { hideNetlifyBadge(); if (++n > 20) clearInterval(t); }, 500);
     })();
   </script>
 </body>
