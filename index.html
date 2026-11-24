@@ -182,20 +182,43 @@
       animation: pulseRing 2.2s infinite;
     }
 
-    /* MOBILE ONLY: keep the bottom order/cart bar clear of the floating "Powered by Netlify" badge (bottom-right). Desktop unaffected. */
+    /* MOBILE ONLY: phone number on one line + tidy, even bottom bar (Ring | Directions | Varukorg) */
+    .phone-nowrap, .phone-nowrap * { white-space: nowrap; }
     @media (max-width: 767px) {
-      div.fixed.bottom-0.inset-x-0.md\:hidden { padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px)) !important; }
-      body { padding-bottom: 11rem !important; }
-      footer#kontakt { padding-bottom: 11rem !important; }
-      #toast { bottom: 9.5rem !important; }
+      /* Bottom bar: single clean layer, equal-height controls, safe-area aware */
+      .mobile-bar {
+        padding: 0.5rem 0.75rem calc(0.5rem + env(safe-area-inset-bottom, 0px)) !important;
+        gap: 0.5rem !important;
+        align-items: stretch !important;
+      }
+      .mobile-bar > a, .mobile-bar > button {
+        min-height: 3rem;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        line-height: 1;
+        white-space: nowrap;
+      }
+      .mobile-bar .mb-call { flex: 1 1 auto !important; min-width: 0; padding-left: 0.75rem !important; padding-right: 0.75rem !important; gap: 0.4rem !important; font-size: 0.8125rem !important; }
+      .mobile-bar .mb-dir  { flex: 0 0 3rem !important; width: 3rem !important; }
+      .mobile-bar .mb-cart { flex: 0 0 auto !important; padding-left: 0.9rem !important; padding-right: 0.9rem !important; gap: 0.4rem !important; font-size: 0.8125rem !important; }
+      /* Reserve space so the last menu items / footer are never hidden behind the bar */
+      body { padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px)) !important; }
+      footer#kontakt { padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px)) !important; }
+      #toast { bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important; }
     }
-
-
-    /* Social icons – brand colours, clearly visible on dark backgrounds and mobile */
-    .social-ig { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); color: #fff; }
-    .social-fb { background: #1877F2; color: #fff; }
-    .social-ig, .social-fb { border: 1px solid rgba(255,255,255,0.28); box-shadow: 0 2px 8px rgba(0,0,0,0.35); transition: transform .15s ease, filter .15s ease; }
-    .social-ig:hover, .social-fb:hover { transform: scale(1.1); filter: brightness(1.12); }
+    @media (max-width: 389px) {
+      /* Header: keep "018-20 35 60" on one line on small phones */
+      header img[alt="Etna Pizzeria logo"] { width: 3.5rem !important; height: 3.5rem !important; }
+      header .hdr-phone { padding-left: 0.6rem !important; padding-right: 0.6rem !important; gap: 0.3rem !important; font-size: 0.72rem !important; }
+      header .hdr-phone span { letter-spacing: 0 !important; }
+      header .hdr-phone svg { width: 0.9rem; height: 0.9rem; }
+      header .hdr-cart { padding-left: 0.65rem !important; padding-right: 0.65rem !important; gap: 0.35rem !important; }
+      .mobile-bar .mb-call, .mobile-bar .mb-cart { font-size: 0.75rem !important; }
+    }
+    @media (max-width: 339px) {
+      /* Very narrow screens: drop the word "Ring" and icon inside the bottom bar, keep the number intact */
+      .mobile-bar .mb-call .mb-ring-word, .mobile-bar .mb-call svg { display: none; }
+    }
 
     /* Hide the Netlify badge/link (bottom right) */
     a[href*="netlify.com"], [class*="netlify" i], [id*="netlify" i], [data-netlify-badge],
@@ -244,14 +267,14 @@
       </div>
 
       <!-- Right Actions: Direct Phone Call + Cart Button -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        <a href="tel:018203560" class="relative call-pulse inline-flex items-center gap-2 bg-espresso-800 hover:bg-espresso-700 border border-crust-500/40 text-cream-50 px-3 sm:px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold transition shadow-md">
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+        <a href="tel:018203560" class="hdr-phone phone-nowrap relative call-pulse inline-flex items-center gap-2 bg-espresso-800 hover:bg-espresso-700 border border-crust-500/40 text-cream-50 px-3 sm:px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold transition shadow-md">
           <i data-lucide="phone-call" class="w-4 h-4 text-crust-500"></i>
           <span class="hidden sm:inline">Ring:</span>
           <span class="text-crust-400 tracking-wide">018-20 35 60</span>
         </a>
 
-        <button onclick="toggleCart(true)" class="relative inline-flex items-center gap-2 bg-terracotta-600 hover:bg-terracotta-500 text-white px-3 sm:px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold transition shadow-lg shadow-terracotta-600/25 cursor-pointer">
+        <button onclick="toggleCart(true)" class="hdr-cart relative inline-flex items-center gap-2 bg-terracotta-600 hover:bg-terracotta-500 text-white px-3 sm:px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold transition shadow-lg shadow-terracotta-600/25 cursor-pointer">
           <i data-lucide="shopping-bag" class="w-4 h-4"></i>
           <span class="hidden sm:inline">Beställning</span>
           <span id="header-cart-count" class="bg-espresso-950 text-crust-400 text-xs font-extrabold px-2 py-0.5 rounded-full">0</span>
@@ -276,8 +299,7 @@
         </h1>
         
         <p class="text-cream-300 text-base sm:text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-          Etna Pizzeria – en välkänd och anrik pizzeria i Uppsala.
-          Beställ din pizza online och hämta den nygräddad hos oss på Svartbäcksgatan 73 – avhämtning varje dag 11–21.
+          Etna Pizzeria – en välkänd och anrik pizzeria i Uppsala. Beställ pizza, kebab och sallader för snabb avhämtning på Svartbäcksgatan – online eller per telefon.
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 mb-10">
@@ -292,20 +314,21 @@
           </a>
         </div>
 
-        <!-- QUICK ACTIONS: vägbeskrivning + sociala medier (kompakt) -->
+
+        <!-- QUICK LINKS: directions + social (compact) -->
         <div class="flex flex-wrap items-center justify-center gap-2.5 -mt-5 mb-10">
-          <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Svartb%C3%A4cksgatan%2073%2C%20753%2033%20Uppsala" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-espresso-800/90 hover:bg-espresso-700 border border-espresso-700 text-cream-50 px-4 py-2 rounded-full text-xs sm:text-sm font-bold transition">
-            <i data-lucide="navigation" class="w-4 h-4 text-terracotta-500"></i>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=Svartb%C3%A4cksgatan+73%2C+753+33+Uppsala" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-espresso-800 hover:bg-espresso-700 border border-espresso-700 text-cream-50 px-4 py-2 rounded-full text-sm font-bold transition">
+            <i data-lucide="navigation" class="w-4 h-4 text-crust-400"></i>
             <span>Vägbeskrivning</span>
           </a>
-          <span class="hidden sm:inline-block w-px h-5 bg-espresso-700" aria-hidden="true"></span>
-          <span class="text-xs text-cream-400 font-semibold">Följ oss</span>
-          <a href="https://www.instagram.com/etnapizzeria_uppsala?gwpx=bGZjemZibTU3Njh3" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Instagram" title="Instagram" class="w-9 h-9 rounded-full social-ig flex items-center justify-center">
-            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg>
+          <span class="hidden sm:block w-px h-6 bg-espresso-700 mx-1" aria-hidden="true"></span>
+          <a href="https://www.instagram.com/etnapizzeria_uppsala?gwpx=bGZjemZibTU3Njh3" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Instagram" title="Instagram" class="w-10 h-10 rounded-full bg-espresso-800 hover:bg-terracotta-600 border border-espresso-700 flex items-center justify-center text-cream-50 transition">
+            <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg>
           </a>
-          <a href="https://www.facebook.com/share/19tqyBYj3B/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Facebook" title="Facebook" class="w-9 h-9 rounded-full social-fb flex items-center justify-center">
-            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H7.9v3h2.6V21h3z"/></svg>
+          <a href="https://www.facebook.com/share/19tqyBYj3B/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Facebook" title="Facebook" class="w-10 h-10 rounded-full bg-espresso-800 hover:bg-terracotta-600 border border-espresso-700 flex items-center justify-center text-cream-50 transition">
+            <svg viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H7.9v3h2.6V21h3z"/></svg>
           </a>
+          <!-- TIKTOK (add later): copy one social <a> above and use the TikTok URL + icon -->
         </div>
 
         <div id="lunch-info" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto text-left">
@@ -400,92 +423,6 @@
     </div>
   </main>
 
-  <!-- VÅR HISTORIA: redigera texten direkt nedan. Grundarbild: lägg /founder.jpg i GitHub-roten. -->
-  <section id="historia" class="max-w-7xl mx-auto px-4 sm:px-6 mt-16 scroll-mt-28">
-    <div class="bg-gradient-to-br from-espresso-850 to-espresso-800 border border-espresso-700/80 rounded-3xl p-5 sm:p-8 grid grid-cols-1 sm:grid-cols-[11rem,1fr] gap-5 sm:gap-8 items-center">
-
-      <!-- GRUNDARBILD (/founder.jpg) – visas automatiskt när filen finns -->
-      <figure class="relative mx-auto w-40 h-40 sm:w-44 sm:h-44 overflow-hidden rounded-2xl bg-espresso-900 border border-crust-500/40">
-        <div class="absolute inset-0 flex flex-col items-center justify-center gap-1.5 text-cream-400 text-center px-2">
-          <i data-lucide="user" class="w-8 h-8 opacity-60"></i>
-          <span class="text-[11px] font-semibold leading-tight">Filippo Gagliano</span>
-        </div>
-        <img src="/founder.jpg" alt="Filippo Gagliano, grundare av Etna Pizzeria" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
-      </figure>
-
-      <div>
-        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-crust-500/15 border border-crust-500/40 text-crust-400 text-xs font-extrabold uppercase tracking-wider mb-3">
-          <i data-lucide="award" class="w-3.5 h-3.5"></i> Sedan 1984
-        </span>
-        <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-cream-50 mb-3">Vår historia</h2>
-        <!-- REDIGERA HISTORIKTEXTEN HÄR (ett <p> per stycke) -->
-        <p class="text-sm sm:text-base text-cream-300 leading-relaxed">
-          Etna Pizzeria grundades 1984 i Uppsala av Filippo Gagliano. I över fyra decennier har vi bakat pizza och serverat kebab och sallader till Uppsalas invånare – och idag kan du både beställa online och hämta din mat hos oss.
-        </p>
-        <p class="text-xs sm:text-sm text-cream-400 mt-3 font-semibold">Grundare: Filippo Gagliano</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- GALLERI: 6 platser. Lägg bilderna i GitHub-roten som /gallery-1.jpg … /gallery-6.jpg.
-       Fler bilder? Kopiera ett <figure>-block och öka numret. Saknas en fil visas "Bild kommer snart". -->
-  <section id="galleri" class="max-w-7xl mx-auto px-4 sm:px-6 mt-12 scroll-mt-28">
-    <div class="mb-4 pb-2 border-b border-espresso-800">
-      <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-cream-50">Galleri</h2>
-      <p class="text-sm text-cream-400">Ett smakprov från Etna Pizzeria</p>
-    </div>
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-        <!-- GALLERIBILD 1: lägg filen i GitHub-roten som /gallery-1.jpg – den visas automatiskt. Ändra alt-texten vid behov. -->
-        <figure class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-espresso-850 border border-espresso-700/80">
-          <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-cream-400">
-            <i data-lucide="image" class="w-7 h-7 opacity-60"></i>
-            <span class="text-xs font-semibold">Bild kommer snart</span>
-          </div>
-          <img src="/gallery-1.jpg" alt="Etna Pizzeria – pizza" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
-        </figure>
-        <!-- GALLERIBILD 2: lägg filen i GitHub-roten som /gallery-2.jpg – den visas automatiskt. Ändra alt-texten vid behov. -->
-        <figure class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-espresso-850 border border-espresso-700/80">
-          <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-cream-400">
-            <i data-lucide="image" class="w-7 h-7 opacity-60"></i>
-            <span class="text-xs font-semibold">Bild kommer snart</span>
-          </div>
-          <img src="/gallery-2.jpg" alt="Etna Pizzeria – restaurangen" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
-        </figure>
-        <!-- GALLERIBILD 3: lägg filen i GitHub-roten som /gallery-3.jpg – den visas automatiskt. Ändra alt-texten vid behov. -->
-        <figure class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-espresso-850 border border-espresso-700/80">
-          <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-cream-400">
-            <i data-lucide="image" class="w-7 h-7 opacity-60"></i>
-            <span class="text-xs font-semibold">Bild kommer snart</span>
-          </div>
-          <img src="/gallery-3.jpg" alt="Etna Pizzeria – kebab" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
-        </figure>
-        <!-- GALLERIBILD 4: lägg filen i GitHub-roten som /gallery-4.jpg – den visas automatiskt. Ändra alt-texten vid behov. -->
-        <figure class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-espresso-850 border border-espresso-700/80">
-          <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-cream-400">
-            <i data-lucide="image" class="w-7 h-7 opacity-60"></i>
-            <span class="text-xs font-semibold">Bild kommer snart</span>
-          </div>
-          <img src="/gallery-4.jpg" alt="Etna Pizzeria – färskt från ugnen" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
-        </figure>
-        <!-- GALLERIBILD 5: lägg filen i GitHub-roten som /gallery-5.jpg – den visas automatiskt. Ändra alt-texten vid behov. -->
-        <figure class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-espresso-850 border border-espresso-700/80">
-          <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-cream-400">
-            <i data-lucide="image" class="w-7 h-7 opacity-60"></i>
-            <span class="text-xs font-semibold">Bild kommer snart</span>
-          </div>
-          <img src="/gallery-5.jpg" alt="Etna Pizzeria – sallad och tillbehör" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
-        </figure>
-        <!-- GALLERIBILD 6: lägg filen i GitHub-roten som /gallery-6.jpg – den visas automatiskt. Ändra alt-texten vid behov. -->
-        <figure class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-espresso-850 border border-espresso-700/80">
-          <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-cream-400">
-            <i data-lucide="image" class="w-7 h-7 opacity-60"></i>
-            <span class="text-xs font-semibold">Bild kommer snart</span>
-          </div>
-          <img src="/gallery-6.jpg" alt="Etna Pizzeria – personalen" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
-        </figure>
-    </div>
-  </section>
-
   <!-- FOOTER -->
   <footer id="kontakt" class="mt-16 border-t border-espresso-800 bg-espresso-950 pt-12 pb-24 md:pb-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -503,10 +440,10 @@
         </a>
         <!-- SOCIAL LINKS – to add TikTok later, copy one <a> below, change href/aria-label/title and use a TikTok SVG icon -->
         <div class="mt-4 flex items-center gap-3">
-          <a href="https://www.instagram.com/etnapizzeria_uppsala?gwpx=bGZjemZibTU3Njh3" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Instagram" title="Instagram" class="w-10 h-10 rounded-full social-ig flex items-center justify-center">
+          <a href="https://www.instagram.com/etnapizzeria_uppsala?gwpx=bGZjemZibTU3Njh3" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Instagram" title="Instagram" class="w-10 h-10 rounded-full bg-espresso-800 hover:bg-terracotta-600 border border-espresso-700 flex items-center justify-center text-cream-50 transition">
             <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg>
           </a>
-          <a href="https://www.facebook.com/share/19tqyBYj3B/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Facebook" title="Facebook" class="w-10 h-10 rounded-full social-fb flex items-center justify-center">
+          <a href="https://www.facebook.com/share/19tqyBYj3B/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på Facebook" title="Facebook" class="w-10 h-10 rounded-full bg-espresso-800 hover:bg-terracotta-600 border border-espresso-700 flex items-center justify-center text-cream-50 transition">
             <svg viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H7.9v3h2.6V21h3z"/></svg>
           </a>
           <!-- TIKTOK (add later): <a href="https://www.tiktok.com/@DITT_KONTO" target="_blank" rel="noopener noreferrer me" aria-label="Etna Pizzeria på TikTok" title="TikTok" class="...same classes as above...">[TikTok SVG]</a> -->
@@ -542,15 +479,15 @@
   </footer>
 
   <!-- MOBILE STICKY BOTTOM BAR -->
-  <div class="fixed bottom-0 inset-x-0 z-40 md:hidden bg-espresso-950/95 backdrop-blur-lg border-t border-espresso-700 p-3 flex items-center gap-2.5">
-    <a href="tel:018203560" class="flex-1 flex items-center justify-center gap-2 bg-espresso-800 border border-crust-500/40 text-cream-50 py-3 rounded-xl font-bold text-sm">
-      <i data-lucide="phone-call" class="w-4 h-4 text-crust-400"></i>
-      <span>Ring 018-20 35 60</span>
+  <div class="mobile-bar fixed bottom-0 inset-x-0 z-40 md:hidden bg-espresso-950/95 backdrop-blur-lg border-t border-espresso-700 p-3 flex items-center gap-2.5">
+    <a href="tel:018203560" class="mb-call phone-nowrap flex-1 flex items-center justify-center gap-2 bg-espresso-800 border border-crust-500/40 text-cream-50 py-3 rounded-xl font-bold text-sm">
+      <i data-lucide="phone-call" class="w-4 h-4 text-crust-400 shrink-0"></i>
+      <span><span class="mb-ring-word">Ring </span>018-20 35 60</span>
     </a>
-    <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Svartb%C3%A4cksgatan%2073%2C%20753%2033%20Uppsala" target="_blank" rel="noopener" aria-label="Vägbeskrivning till Etna Pizzeria" title="Vägbeskrivning" class="shrink-0 w-12 h-12 flex items-center justify-center bg-espresso-800 border border-crust-500/40 text-crust-400 rounded-xl">
-      <i data-lucide="navigation" class="w-5 h-5"></i>
+    <a href="https://www.google.com/maps/dir/?api=1&destination=Svartb%C3%A4cksgatan+73%2C+753+33+Uppsala" target="_blank" rel="noopener noreferrer" aria-label="Vägbeskrivning" title="Vägbeskrivning" class="mb-dir shrink-0 w-12 flex items-center justify-center bg-espresso-800 border border-crust-500/40 text-crust-400 rounded-xl">
+      <i data-lucide="navigation" class="w-4 h-4"></i>
     </a>
-    <button onclick="toggleCart(true)" class="flex-1 flex items-center justify-center gap-2 bg-terracotta-600 text-white py-3 rounded-xl font-bold text-sm shadow-lg">
+    <button onclick="toggleCart(true)" class="mb-cart flex-1 flex items-center justify-center gap-2 bg-terracotta-600 text-white py-3 rounded-xl font-bold text-sm shadow-lg">
       <i data-lucide="shopping-bag" class="w-4 h-4"></i>
       <span>Varukorg (<span id="mobile-cart-count">0</span>)</span>
     </button>
@@ -824,7 +761,10 @@
     };
 
     const PIZZA_ADDONS = [
+      { id: 'pa1', name: 'Extra tillbehör på din pizza', price: 25 },
       { id: 'pa2', name: 'Glutenfri botten', price: 30 },
+      { id: 'pa3', name: 'Surdegs pizza', price: 30 },
+      { id: 'pa4', name: 'Familjepizza', price: 305, replaceBase: true },
       { id: 'pa5', name: 'Laktosfri', price: 15 },
       { id: 'pa6', name: 'Vegan pizza', price: 20 },
       { id: 'pa7', name: 'Barnpizza (-10:- på ordinarie pris)', price: -10 },
@@ -857,65 +797,11 @@
     };
 
     // ==========================================
-    // CUSTOMER DETAILS (localStorage) – name & phone remembered on this device
-    // ==========================================
-    const CUSTOMER_STORE_KEY = 'etnaCustomer';
-    function loadCustomer() {
-      try {
-        const raw = localStorage.getItem(CUSTOMER_STORE_KEY);
-        if (!raw) return;
-        const c = JSON.parse(raw);
-        if (c && typeof c.name === 'string') state.customerName = c.name;
-        if (c && typeof c.phone === 'string') state.customerPhone = c.phone;
-      } catch (e) {}
-    }
-    function saveCustomer(name, phone) {
-      try { localStorage.setItem(CUSTOMER_STORE_KEY, JSON.stringify({ name: name, phone: phone })); } catch (e) {}
-    }
-    function hasSavedCustomer() {
-      try { return !!localStorage.getItem(CUSTOMER_STORE_KEY); } catch (e) { return false; }
-    }
-    function forgetCustomer() {
-      try { localStorage.removeItem(CUSTOMER_STORE_KEY); } catch (e) {}
-      state.customerName = '';
-      state.customerPhone = '';
-      updateCartUI();
-      showToast('Dina sparade uppgifter är borttagna');
-    }
-
-    // ==========================================
-    // CART UPSELL (dryck / sås) – discreet suggestions
-    // ==========================================
-    const UPSELL_ITEMS = [
-      { id: 'd1', label: '🥤 Dryck 33 cl' },
-      { id: 't3', label: 'Kebabsås' },
-      { id: 't5', label: 'Tzatziki' },
-      { id: 't2', label: 'Bearnaisesås' }
-    ];
-    function upsellAdd(id) {
-      const item = MENU_DATA.tillbehor.find(i => i.id === id);
-      if (item) quickAddItem(item);
-    }
-    function upsellHtml() {
-      const chips = UPSELL_ITEMS.filter(u => !state.cart.some(c => c.cartId === u.id)).map(u => {
-        const item = MENU_DATA.tillbehor.find(i => i.id === u.id);
-        if (!item) return '';
-        return `<button type="button" onclick="upsellAdd('${u.id}')" class="inline-flex items-center gap-1.5 bg-espresso-900 hover:bg-terracotta-600 border border-espresso-700 hover:border-terracotta-500 text-cream-200 hover:text-white px-3 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer"><span>${u.label}</span><span class="text-crust-400 font-extrabold">+${item.price}:-</span></button>`;
-      }).join('');
-      if (!chips.trim()) return '';
-      return `
-        <div class="bg-espresso-850/60 border border-espresso-800 rounded-2xl px-4 py-3">
-          <p class="text-xs text-cream-400 font-semibold mb-2">Något att dricka eller doppa i?</p>
-          <div class="flex flex-wrap gap-2">${chips}</div>
-        </div>`;
-    }
-
-    // ==========================================
     // INITIALIZATION & EVENT LISTENERS
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
-      loadCustomer();
+      loadSavedCustomer();
       renderMenu();
       updateCartUI();
       resumeActiveOrder();
@@ -1517,7 +1403,7 @@
           `).join('')}
         </div>
 
-        ${upsellHtml()}
+        ${renderUpsell()}
 
         <div class="bg-espresso-850 border border-espresso-800 rounded-2xl p-4 space-y-3">
           <h3 class="text-xs uppercase tracking-wider font-bold text-crust-400">Leveranssätt & Uppgifter</h3>
@@ -1535,11 +1421,9 @@
             🏃 Avhämtning i restaurangen
           </div>`}
 
-          <input id="order-name" type="text" autocomplete="name" value="${escapeHtml(state.customerName)}" oninput="state.customerName=this.value" placeholder="Ditt namn *" class="w-full bg-espresso-900 border border-espresso-700 rounded-xl px-3.5 py-2.5 text-sm text-cream-50 placeholder-cream-400 outline-none focus:border-crust-500">
+          <input id="order-name" type="text" value="${escapeHtml(state.customerName)}" oninput="state.customerName=this.value" placeholder="Ditt namn *" class="w-full bg-espresso-900 border border-espresso-700 rounded-xl px-3.5 py-2.5 text-sm text-cream-50 placeholder-cream-400 outline-none focus:border-crust-500">
           
-          <input id="order-phone" type="tel" autocomplete="tel" value="${escapeHtml(state.customerPhone)}" oninput="state.customerPhone=this.value" placeholder="Mobilnummer *" class="w-full bg-espresso-900 border border-espresso-700 rounded-xl px-3.5 py-2.5 text-sm text-cream-50 placeholder-cream-400 outline-none focus:border-crust-500">
-
-          <p class="text-[11px] text-cream-400 -mt-1">Namn och nummer sparas på den här enheten till nästa beställning.${hasSavedCustomer() ? ' <button type="button" onclick="forgetCustomer()" class="underline hover:text-crust-400 cursor-pointer">Rensa</button>' : ''}</p>
+          <input id="order-phone" type="tel" value="${escapeHtml(state.customerPhone)}" oninput="state.customerPhone=this.value" placeholder="Mobilnummer *" class="w-full bg-espresso-900 border border-espresso-700 rounded-xl px-3.5 py-2.5 text-sm text-cream-50 placeholder-cream-400 outline-none focus:border-crust-500">
 
           ${FEATURES.delivery && state.orderType === 'delivery' ? `
             <input id="order-address" type="text" value="${escapeHtml(state.customerAddress)}" oninput="state.customerAddress=this.value" placeholder="Gatuadress & portkod *" class="w-full bg-espresso-900 border border-espresso-700 rounded-xl px-3.5 py-2.5 text-sm text-cream-50 placeholder-cream-400 outline-none focus:border-crust-500">
@@ -1781,10 +1665,8 @@
         state.activeOrder = placed;
         state.orderSubmitted = placed;
         if (placed.status === 'pending') { saveActiveOrder(placed); startOrderPolling(); }
-        state.cart = [];
         saveCustomer(nameVal, phoneVal);
-        state.customerName = nameVal;
-        state.customerPhone = phoneVal;
+        state.cart = [];
         state.customerAddress = '';
         showToast(created.status === 'received' ? 'Beställning skickad!' : 'Beställning skickad – väntar på bekräftelse');
       } catch (err) {
@@ -1797,6 +1679,45 @@
         state.isSubmitting = false;
         updateCartUI();
       }
+    }
+
+    // ---------- Cart upsell (drink / sauce) ----------
+    const UPSELL_ITEMS = [
+      { id: 'd1', label: 'Dryck 33 cl' },
+      { id: 't3', label: 'Kebabsås' },
+      { id: 't5', label: 'Tzatziki' },
+      { id: 't2', label: 'Bearnaisesås' }
+    ];
+    function renderUpsell() {
+      const chips = UPSELL_ITEMS.map(u => {
+        const it = MENU_DATA.tillbehor.find(t => t.id === u.id);
+        if (!it) return '';
+        return `<button type="button" onclick="upsellAdd('${u.id}')" class="inline-flex items-center gap-1.5 bg-espresso-900 hover:bg-terracotta-600 border border-espresso-700 text-cream-100 px-3 py-1.5 rounded-full text-xs font-bold transition cursor-pointer"><span>+ ${u.label}</span><span class="text-crust-400">${it.price}:-</span></button>`;
+      }).join('');
+      return `
+        <div class="bg-espresso-850/60 border border-dashed border-espresso-700 rounded-2xl p-3.5">
+          <p class="text-xs text-cream-400 font-semibold mb-2">Något att dricka eller doppa i?</p>
+          <div class="flex flex-wrap gap-2">${chips}</div>
+        </div>`;
+    }
+    function upsellAdd(id) {
+      const it = MENU_DATA.tillbehor.find(t => t.id === id);
+      if (it) quickAddItem(it);
+    }
+
+    // ---------- Remember customer name & phone (localStorage) ----------
+    const CUSTOMER_STORE_KEY = 'etnaCustomer';
+    function loadSavedCustomer() {
+      try {
+        const raw = localStorage.getItem(CUSTOMER_STORE_KEY);
+        if (!raw) return;
+        const c = JSON.parse(raw);
+        if (c && typeof c.name === 'string') state.customerName = c.name;
+        if (c && typeof c.phone === 'string') state.customerPhone = c.phone;
+      } catch (e) {}
+    }
+    function saveCustomer(name, phone) {
+      try { localStorage.setItem(CUSTOMER_STORE_KEY, JSON.stringify({ name: name, phone: phone })); } catch (e) {}
     }
 
     let toastTimer;
