@@ -1624,5 +1624,44 @@
       var n = 0, t = setInterval(function () { hideNetlifyBadge(); if (++n > 20) clearInterval(t); }, 500);
     })();
   </script>
+<style>
+  #nl-card, #nl-badge, .nl-card, .nl-badge, .nl-wrap,
+  iframe[src*="netlify"], iframe[id*="nl"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    max-width: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+  }
+</style>
+<script>
+  (function () {
+    const selectors = '#nl-card, #nl-badge, .nl-card, .nl-badge, .nl-wrap, iframe[src*="netlify"], iframe[id*="nl"]';
+    const cleanNetlifyBadge = () => {
+      document.querySelectorAll(selectors).forEach((el) => {
+        el.style.setProperty('display', 'none', 'important');
+        el.style.setProperty('visibility', 'hidden', 'important');
+        el.style.setProperty('opacity', '0', 'important');
+        el.style.setProperty('pointer-events', 'none', 'important');
+        el.remove();
+      });
+    };
+    cleanNetlifyBadge();
+    window.addEventListener('DOMContentLoaded', cleanNetlifyBadge);
+    window.addEventListener('load', cleanNetlifyBadge);
+    const observer = new MutationObserver(cleanNetlifyBadge);
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+    const interval = setInterval(cleanNetlifyBadge, 250);
+    setTimeout(() => {
+      clearInterval(interval);
+      observer.disconnect();
+    }, 15000);
+  })();
+</script>
 </body>
+</html>/body>
 </html>
