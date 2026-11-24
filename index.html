@@ -1789,5 +1789,54 @@
       var n = 0, t = setInterval(function () { hideNetlifyBadge(); if (++n > 20) clearInterval(t); }, 500);
     })();
   </script>
+<style>
+  #nl-card, #nl-badge, .nl-card, .nl-badge, .nl-wrap,
+  iframe[src*="netlify"], iframe[id*="nl"], a[href*="netlify.com"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    max-width: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+  }
+</style>
+<script>
+  (function () {
+    const selectors = '#nl-card, #nl-badge, .nl-card, .nl-badge, .nl-wrap, iframe[src*="netlify"], iframe[id*="nl"]';
+    const cleanBadge = () => {
+      document.querySelectorAll(selectors).forEach((el) => {
+        el.style.setProperty('display', 'none', 'important');
+        el.style.setProperty('visibility', 'hidden', 'important');
+        el.style.setProperty('opacity', '0', 'important');
+        el.style.setProperty('pointer-events', 'none', 'important');
+        el.remove();
+      });
+      document.querySelectorAll('a[href*="netlify.com"]').forEach((a) => {
+        let node = a;
+        while (node && node !== document.body) {
+          if (getComputedStyle(node).position === 'fixed') {
+            node.style.setProperty('display', 'none', 'important');
+            node.remove();
+            break;
+          }
+          node = node.parentElement;
+        }
+      });
+    };
+    cleanBadge();
+    document.addEventListener('DOMContentLoaded', cleanBadge);
+    window.addEventListener('load', cleanBadge);
+    const observer = new MutationObserver(cleanBadge);
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+    const timer = setInterval(cleanBadge, 250);
+    setTimeout(() => {
+      clearInterval(timer);
+      observer.disconnect();
+    }, 15000);
+  })();
+</script>
 </body>
 </html>
