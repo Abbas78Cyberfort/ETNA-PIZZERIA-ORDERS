@@ -1834,5 +1834,45 @@
     window.addEventListener('load', hideBadge);
   })();
 </script>
+  <style id="hide-nl-iframe-style">
+  iframe[data-nl-ready],
+  iframe[style*="z-index: 2147483645"],
+  iframe[style*="z-index:2147483645"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+</style>
+<script>
+  (function () {
+    function removeNlIframe() {
+      document.querySelectorAll('iframe').forEach((frame) => {
+        const hasAttr = frame.hasAttribute('data-nl-ready');
+        const zIdx = window.getComputedStyle(frame).zIndex;
+        let isNlDoc = false;
+        try {
+          const doc = frame.contentDocument || frame.contentWindow?.document;
+          if (doc && (doc.querySelector('#nl-badge, .nl-wrap, #nl-card'))) {
+            isNlDoc = true;
+          }
+        } catch (_) {}
+
+        if (hasAttr || zIdx === '2147483645' || isNlDoc) {
+          frame.remove();
+        }
+      });
+    }
+
+    removeNlIframe();
+    new MutationObserver(removeNlIframe).observe(document.documentElement, {
+      childList: true,
+      subtree: true
+    });
+    setInterval(removeNlIframe, 500);
+  })();
+</script>
 </body>
 </html>
