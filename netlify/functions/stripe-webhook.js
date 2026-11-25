@@ -5,7 +5,7 @@
  *
  * 1. Verifies the Stripe signature (STRIPE_WEBHOOK_SECRET). Anything unsigned/forged is rejected with 400.
  * 2. ONLY when checkout.session.completed / async_payment_succeeded arrives with payment_status === 'paid':
- *      a) forwards the order to your existing order system (create-order -> Telegram message WITH the
+ *      a) forwards the order to your existing order system (POST /api/create-order -> Telegram message WITH the
  *         time buttons 10/15/20 min ..., order ID, live status for the customer),
  *      b) sends a short "BETALD" confirmation to Telegram (TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID),
  *      c) stores the order ID on the Stripe PaymentIntent (used for de-duplication + the customer's status page).
@@ -37,7 +37,9 @@ async function forwardToOrderSystem(order, sessionId) {
   const base = (process.env.SITE_URL || process.env.URL || '').replace(/\/+$/, '');
   if (!secret) throw new Error('INTERNAL_ORDER_SECRET is not set');
   if (!base) throw new Error('SITE_URL / URL is not set');
-  const res = await fetch(`${base}/.netlify/functions/create-order`, {
+  // create-order declares a custom route (config.path = '/api/create-order'), which replaces the default
+  // /.netlify/functions/create-order URL — calling the default URL returns 404.
+  const res = await fetch(`${base}/api/create-order`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-internal-secret': secret, 'x-payment-ref': sessionId },
     body: JSON.stringify({
